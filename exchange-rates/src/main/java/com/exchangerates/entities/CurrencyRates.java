@@ -1,8 +1,9 @@
 package com.exchangerates.entities;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class BaseRates {
+public class CurrencyRates {
 
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -19,9 +20,15 @@ public class BaseRates {
   @Column(nullable = false)
   private float rate;
   @Column(nullable = false)
-  private Date date;
+  private LocalDate date;
   @ManyToOne(fetch=FetchType.LAZY)
   private Currency currency;
+
+  // public CurrencyRates(float rate, LocalDate date, Currency currency){
+  //   this.rate = rate;
+  //   this.date = date;
+  //   this.currency = currency;
+  // }
 
   public int getId() {
     return id;
@@ -39,12 +46,12 @@ public class BaseRates {
     this.rate = rate;
   }
 
-  public Date getDate() {
+  public LocalDate getDate() {
     return date;
   }
 
-  public void setDate(Date date) {
-    this.date = date;
+  public void setDate(LocalDate localDate) {
+    this.date = localDate;
   }
 
   public Currency getCurrency() {
@@ -54,4 +61,10 @@ public class BaseRates {
   public void setCurrency(Currency currency) {
     this.currency = currency;
   }
+
+  @Override
+  public String toString() {
+    return "CurrencyRates [currency=" + currency + ", date=" + date + ", id=" + id + ", rate=" + rate + "]";
+  }
+  
 }

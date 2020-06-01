@@ -2,6 +2,11 @@ package com.exchangerates.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,7 +15,7 @@ import javax.persistence.GenerationType;
 public class Currency {
   
   @Id
-  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   @Column(nullable = false, length = 30)
   private String currencyName;
@@ -18,6 +23,8 @@ public class Currency {
   private String abbreviation;
   @Column(nullable = false)
   private int currencyCode;
+  // @OneToMany(mappedBy = "currency", orphanRemoval = true)
+  // private List<CurrencyRates> rates = new ArrayList<>();
 
   public int getId() {
     return id;
@@ -50,4 +57,22 @@ public class Currency {
   public void setcurrencyCode(int currencyCode) {
     this.currencyCode = currencyCode;
   }
+
+  // public List<CurrencyRates> getRates() {
+  //   return rates;
+  // }
+
+  // public void setRates(List<CurrencyRates> rates) {
+  //   this.rates = rates;
+  // }
+
+  // public void addRate(CurrencyRates currencyRates){
+  //   rates.add(currencyRates);
+  //   currencyRates.setCurrency(this);
+  // }
+
+  // public void removeRate(CurrencyRates currencyRates){
+  //   rates.remove(currencyRates);
+  //   currencyRates.setCurrency(null);
+  // }
 }

@@ -2,5 +2,10 @@ package com.exchangerates.entities;
 
 import javax.persistence.Entity;
 
-@Entity(name = "EUR")
-public class EUR extends BaseRates {}
+@Entity
+public class EUR extends CurrencyRates {
+
+  // public EUR(float rate, LocalDate date, Currency currency) {
+  //   super(rate, date, currency);
+  // }
+}

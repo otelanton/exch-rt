@@ -10,15 +10,22 @@ public class ParseExchangeRates implements ParseExchangeRatesInterface{
 
   public ParseExchangeRates(){}
 
-  public float getRate() throws IOException {
-    return Float.parseFloat(
-      Jsoup.connect(URL)
-        .get()
-        .select(queryRate("USD"))
-        .last()
-        .select("td.rate")
-        .text()
-      );
+  public float getRate(String abbr){
+    float rateValue = 0;
+    try{
+      rateValue = Float.parseFloat(
+        Jsoup.connect(URL)
+          .get()
+          .select(queryRate(abbr))
+          .last()
+          .select("td.rate")
+          .text()
+        );
+    }catch(IOException e){
+      System.out.println(e);
+    }
+
+    return rateValue;
   }
 
   private String queryRate(String currencyAbbr) {
