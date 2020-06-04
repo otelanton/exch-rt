@@ -23,8 +23,8 @@ public class Currency {
   private String abbreviation;
   @Column(nullable = false)
   private int currencyCode;
-  // @OneToMany(mappedBy = "currency", orphanRemoval = true)
-  // private List<CurrencyRates> rates = new ArrayList<>();
+  @OneToMany(mappedBy = "currency", orphanRemoval = true)
+  private List<Rates> rates = new ArrayList<>();
 
   public int getId() {
     return id;
@@ -58,21 +58,36 @@ public class Currency {
     this.currencyCode = currencyCode;
   }
 
-  // public List<CurrencyRates> getRates() {
-  //   return rates;
-  // }
+  public List<Rates> getRates() {
+    return rates;
+  }
+  
 
-  // public void setRates(List<CurrencyRates> rates) {
-  //   this.rates = rates;
-  // }
+  public void setRates(List<Rates> rates) {
+    this.rates = rates;
+  }
 
-  // public void addRate(CurrencyRates currencyRates){
-  //   rates.add(currencyRates);
-  //   currencyRates.setCurrency(this);
-  // }
+  public void addRate(Rates currencyRates){
+    rates.add(currencyRates);
+    currencyRates.setCurrency(this);
+  }
 
-  // public void removeRate(CurrencyRates currencyRates){
-  //   rates.remove(currencyRates);
-  //   currencyRates.setCurrency(null);
-  // }
+  public void removeRate(Rates currencyRates){
+    rates.remove(currencyRates);
+    currencyRates.setCurrency(null);
+  }
+
+  @Override
+  public String toString() {
+    return "Currency [abbreviation=" 
+      + abbreviation 
+      + ", currencyCode=" 
+      + currencyCode 
+      + ", currencyName="
+      + currencyName 
+      + ", id=" + id 
+      + ", rates=" 
+      + rates 
+      + "]";
+  }
 }

@@ -1,11 +1,7 @@
-package com.exchangerates.entities;
+// package com.exchangerates.entities;
 
-import javax.persistence.Entity;
+// import javax.persistence.Entity;
 
-@Entity
-public class EUR extends CurrencyRates {
-
-  // public EUR(float rate, LocalDate date, Currency currency) {
-  //   super(rate, date, currency);
-  // }
-}
+// @Entity
+// public class EUR extends Rates {
+// }

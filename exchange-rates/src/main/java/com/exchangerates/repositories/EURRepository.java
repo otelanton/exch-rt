@@ -1,9 +1,9 @@
-package com.exchangerates.repositories;
+// package com.exchangerates.repositories;
 
-import com.exchangerates.entities.EUR;
+// import com.exchangerates.entities.EUR;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EURRepository extends JpaRepository<EUR, Integer> {
+// public interface EURRepository extends JpaRepository<EUR, Integer> {
   
-}
+// }

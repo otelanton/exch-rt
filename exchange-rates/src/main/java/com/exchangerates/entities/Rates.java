@@ -9,10 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
 
-@MappedSuperclass
-public class CurrencyRates {
+@Entity
+public class Rates {
 
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -23,13 +22,7 @@ public class CurrencyRates {
   private LocalDate date;
   @ManyToOne(fetch=FetchType.LAZY)
   private Currency currency;
-
-  // public CurrencyRates(float rate, LocalDate date, Currency currency){
-  //   this.rate = rate;
-  //   this.date = date;
-  //   this.currency = currency;
-  // }
-
+  
   public int getId() {
     return id;
   }
@@ -64,7 +57,14 @@ public class CurrencyRates {
 
   @Override
   public String toString() {
-    return "CurrencyRates [currency=" + currency + ", date=" + date + ", id=" + id + ", rate=" + rate + "]";
+    return "CurrencyRates [currency=" 
+      + currency.getAbbreviation() 
+      + ", date=" 
+      + date + ", id=" 
+      + id 
+      + ", rate=" 
+      + rate 
+      + "]";
   }
   
 }

@@ -1,12 +1,12 @@
 package com.exchangerates.service;
 
-public enum Rates {
+public enum Names {
   USD("USD"),
   EUR("EUR");
 
   private String rateAbbr;
 
-  Rates(String rateAbbr){
+  Names(String rateAbbr){
     this.rateAbbr = rateAbbr;
   }
 
