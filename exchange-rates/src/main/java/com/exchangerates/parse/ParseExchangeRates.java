@@ -92,7 +92,7 @@ public class ParseExchangeRates implements ParseExchangeRatesInterface {
     XPath xpath = xpathFactory.newXPath();
 
     String value = "";
-    try{
+    try {
       // Create XPathExpression object
       XPathExpression expr = xpath.compile(xpathExpression);
         

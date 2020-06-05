@@ -47,18 +47,18 @@ public class Rates {
     this.date = localDate;
   }
 
-  public Currency getCurrency() {
-    return currency;
-  }
+  // public Currency getCurrency() {
+  //   return currency;
+  // }
 
   public void setCurrency(Currency currency) {
     this.currency = currency;
   }
-
+  
   @Override
   public String toString() {
     return "CurrencyRates [currency=" 
-      + currency.getAbbreviation() 
+      + currency.getcharCode() 
       + ", date=" 
       + date + ", id=" 
       + id 
@@ -66,5 +66,4 @@ public class Rates {
       + rate 
       + "]";
   }
-  
 }

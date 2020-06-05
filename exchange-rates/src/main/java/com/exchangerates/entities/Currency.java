@@ -1,6 +1,7 @@
 package com.exchangerates.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
@@ -20,10 +21,12 @@ public class Currency {
   @Column(nullable = false, length = 30)
   private String currencyName;
   @Column(nullable = false, length = 3)
-  private String abbreviation;
+  private String charCode;
   @Column(nullable = false)
   private int currencyCode;
-  @OneToMany(mappedBy = "currency", orphanRemoval = true)
+  @Column(nullable = false)
+  private int nominal;
+  @OneToMany(mappedBy = "currency", orphanRemoval = true, fetch = FetchType.EAGER)
   private List<Rates> rates = new ArrayList<>();
 
   public int getId() {
@@ -42,12 +45,12 @@ public class Currency {
     this.currencyName = name;
   }
 
-  public String getAbbreviation() {
-    return abbreviation;
+  public String getcharCode() {
+    return charCode;
   }
 
-  public void setAbbreviation(String abbreviation) {
-    this.abbreviation = abbreviation;
+  public void setcharCode(String charCode) {
+    this.charCode = charCode;
   }
 
   public int getcurrencyCode() {
@@ -56,6 +59,14 @@ public class Currency {
 
   public void setcurrencyCode(int currencyCode) {
     this.currencyCode = currencyCode;
+  }
+
+  public int getNominal() {
+    return nominal;
+  }
+
+  public void setNominal(int nominal) {
+    this.nominal = nominal;
   }
 
   public List<Rates> getRates() {
@@ -79,8 +90,8 @@ public class Currency {
 
   @Override
   public String toString() {
-    return "Currency [abbreviation=" 
-      + abbreviation 
+    return "Currency [charCode=" 
+      + charCode 
       + ", currencyCode=" 
       + currencyCode 
       + ", currencyName="

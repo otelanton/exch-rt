@@ -2,6 +2,9 @@ package com.exchangerates.service;
 
 public enum Names {
   USD("USD"),
+  RUB("RUB"),
+  UAH("UAH"),
+  RON("RON"),
   EUR("EUR");
 
   private String rateAbbr;

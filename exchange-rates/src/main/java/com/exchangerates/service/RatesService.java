@@ -12,9 +12,12 @@ import com.exchangerates.repositories.CurrencyRepository;
 import com.exchangerates.repositories.RatesRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
+@EnableScheduling
 public class RatesService {
 
   private CurrencyRepository currencyRepository;
@@ -22,29 +25,26 @@ public class RatesService {
   private RatesRecordCreator ratesRecordCreator;
   private ParseExchangeRatesInterface parser = new ParseExchangeRates();
 
+  @Scheduled(fixedDelay = 5000)
   public void build(){
 
     Names[] abbreviations = Names.values();
 
-    for(Names abbreviation: abbreviations){
-      String currencyNameAbbreviation = abbreviation.getRateAbbr();
-      Currency fk = this.currencyRepository.findByAbbreviation(currencyNameAbbreviation);
+    for(Names abbreviation : abbreviations){
+      String charCode = abbreviation.getRateAbbr();
+      Currency fk = this.currencyRepository.findByCharCode(charCode);
 
-
-      List<Rates> r = this.currencyRepository.findByAbbreviation("EUR")
-        .getRates();
-      for(Rates a: r){
-        System.out.println("gfkjghfjkhgjkfakgFHGJHG G HRKH G" + " " + a.toString());
-      }
-
-
-
-      float currencyRate = parser.getRate(currencyNameAbbreviation);
+      float currencyRate = parser.getRate(charCode);
+      int nominal = parser.getNominal(charCode);
       this.ratesRepository.save(
         this.ratesRecordCreator
-          .createNewRatesTableRecord(currencyRate, LocalDate.now(), fk)
+          .createNewRatesTableRecord(currencyRate, LocalDate.now(), fk, nominal)
       );
     }
+  }
+
+  public List<Rates> get(String charCode){
+    return this.currencyRepository.findByCharCode(charCode).getRates();
   }
 
   /*
