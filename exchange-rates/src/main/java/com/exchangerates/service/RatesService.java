@@ -25,7 +25,7 @@ public class RatesService {
   private RatesRecordCreator ratesRecordCreator;
   private ParseExchangeRatesInterface parser = new ParseExchangeRates();
 
-  @Scheduled(fixedDelay = 5000)
+  @Scheduled(fixedDelay = 500000)
   public void build(){
 
     Names[] abbreviations = Names.values();
