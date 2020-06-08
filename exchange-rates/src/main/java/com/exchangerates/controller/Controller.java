@@ -19,7 +19,7 @@ public class Controller {
 
   @RequestMapping(value="/b", method=RequestMethod.GET)
   public void createRecord(){
-    service.build();
+    service.gen();
   }
 
   @RequestMapping(value="/c/{charCode}", method=RequestMethod.GET)

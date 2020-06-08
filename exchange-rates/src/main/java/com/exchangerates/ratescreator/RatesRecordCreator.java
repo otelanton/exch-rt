@@ -10,12 +10,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RatesRecordCreator {
 
-  public Rates createNewRatesTableRecord(float rate, LocalDate date, Currency currencyFK, int nominal){
+  public Rates createNewRatesTableRecord(float rate, LocalDate date, Currency currencyFK){
     Rates ratesRecord = new Rates();
     ratesRecord.setCurrency(currencyFK);
     ratesRecord.setDate(date);
     ratesRecord.setRate(rate);
-    // ratesRecord.setNominal(nominal);
     currencyFK.addRate(ratesRecord);
     return ratesRecord;
   }
