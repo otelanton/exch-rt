@@ -26,7 +26,7 @@ public class XMLDocument {
     return document;
   }
 
-  private final String URL = "http://www.bnm.md/ru/official_exchange_rates?get_xml=1&date=";
+  private final String URL = "http://www.bnm.md/en/official_exchange_rates?get_xml=1&date=";
   private String formatedDate = LocalDate.now()
     .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 

@@ -23,6 +23,14 @@ public class Rates {
   @ManyToOne(fetch=FetchType.LAZY)
   private Currency currency;
   
+  public Rates(){}
+
+  public Rates(float rate, LocalDate date, Currency currency){
+    this.rate = rate;
+    this.date = date;
+    this.currency = currency;
+  }
+
   public int getId() {
     return id;
   }
@@ -58,7 +66,7 @@ public class Rates {
   @Override
   public String toString() {
     return "CurrencyRates [currency=" 
-      + currency.getcharCode() 
+      + currency.getCharCode() 
       + ", date=" 
       + date + ", id=" 
       + id 

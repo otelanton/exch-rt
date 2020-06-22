@@ -8,14 +8,22 @@ import javax.xml.xpath.XPathFactory;
 
 import com.exchangerates.parse.document.XMLDocument;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
+@Component
 public class ParseExchangeRates implements ParseExchangeRatesInterface {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ParseExchangeRates.class);
 
   public ParseExchangeRates() {
   }
 
   public float getRate(String charCode) {
+    if(charCode == null || charCode.isEmpty())
+      LOG.error("Charcode is empty ", new IllegalArgumentException());
     return Float.parseFloat(parseXMLRates(charCode));
   }
 
@@ -35,7 +43,7 @@ public class ParseExchangeRates implements ParseExchangeRatesInterface {
     try {
       if(this.doc != null)
         rateValue = evaluateXPath(this.doc, xPathValue);
-      else System.err.println("Document object is empty");
+      else LOG.error("Document object is empty");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -51,7 +59,7 @@ public class ParseExchangeRates implements ParseExchangeRatesInterface {
     try {
       if(this.doc != null)
         nominalString = evaluateXPath(this.doc, xPathNominal);
-      else System.err.println("Document object is empty");
+      else LOG.error("Document object is empty");
     } catch (Exception e) {
       e.printStackTrace();
     }

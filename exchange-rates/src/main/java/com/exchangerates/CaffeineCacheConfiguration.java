@@ -15,7 +15,7 @@ public class CaffeineCacheConfiguration {
 
   @Bean
   public CacheManager cacheManager() {
-    CaffeineCacheManager cacheManager = new CaffeineCacheManager("rates");
+    CaffeineCacheManager cacheManager = new CaffeineCacheManager("rates", "currencies");
     cacheManager.setCaffeine(caffeineCacheBuilder());
     return cacheManager;
   }
@@ -25,6 +25,7 @@ public class CaffeineCacheConfiguration {
       .initialCapacity(100)
       .maximumSize(1000)
       .expireAfterWrite(25, TimeUnit.SECONDS)
+      // .expireAfterWrite(86300, TimeUnit.SECONDS)
       .removalListener((Object key, Object value, RemovalCause cause) -> {
         System.out.format("removal listerner called with key [%s], cause [%s], evicted [%S]\n", 
           key, cause.toString(), cause.wasEvicted());
