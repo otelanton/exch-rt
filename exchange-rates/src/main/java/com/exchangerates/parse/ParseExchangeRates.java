@@ -10,29 +10,25 @@ import com.exchangerates.parse.document.XMLDocument;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
 @Component
 public class ParseExchangeRates implements ParseExchangeRatesInterface {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ParseExchangeRates.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ParseExchangeRates.class);
 
   public ParseExchangeRates() {
   }
 
   public float getRate(String charCode) {
     if(charCode == null || charCode.isEmpty())
-      LOG.error("Charcode is empty ", new IllegalArgumentException());
+      LOGGER.error("Charcode is empty ", new IllegalArgumentException());
     return Float.parseFloat(parseXMLRates(charCode));
   }
 
-  public int getNominal(String charCode) {
-    return Integer.parseInt(this.parseNominal(charCode));
-  }
-
-  private XMLDocument document = new XMLDocument();
-  private Document doc = document.createDocument();
+  private Document doc;
 
   private String parseXMLRates(String charCode) {
     String rateValue = "";
@@ -43,27 +39,12 @@ public class ParseExchangeRates implements ParseExchangeRatesInterface {
     try {
       if(this.doc != null)
         rateValue = evaluateXPath(this.doc, xPathValue);
-      else LOG.error("Document object is empty");
+      else LOGGER.error("Document object is empty");
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     return rateValue;
-  }
-
-  private String parseNominal(String charCode) {
-    String nominalString = "";
-
-    // format path string to look for nominal value in node with requested charcode
-    String xPathNominal = String.format("/ValCurs/Valute[CharCode='%s']/Nominal[text()]", charCode);
-    try {
-      if(this.doc != null)
-        nominalString = evaluateXPath(this.doc, xPathNominal);
-      else LOG.error("Document object is empty");
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return nominalString;
   }
 
   private String evaluateXPath(Document document, String xpathExpression) throws Exception {
@@ -85,5 +66,10 @@ public class ParseExchangeRates implements ParseExchangeRatesInterface {
       e.printStackTrace();
     }
     return value;
+  }
+
+  @Autowired
+  public void setDocument(XMLDocument document){
+    this.doc = document.createDocument();
   }
 }

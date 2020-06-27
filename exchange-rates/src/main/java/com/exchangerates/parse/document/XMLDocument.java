@@ -3,14 +3,17 @@ package com.exchangerates.parse.document;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+@Component
 public class XMLDocument {
 
   public Document createDocument(){
@@ -18,7 +21,7 @@ public class XMLDocument {
     try {
       DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-      document = dBuilder.parse(new java.net.URL(this.formatUrl(this.formatedDate)).openStream());
+      document = dBuilder.parse(new URL(this.formatUrl(this.formatedDate)).openStream());
     } catch (SAXException | IOException | ParserConfigurationException e) {
       e.printStackTrace();
     }

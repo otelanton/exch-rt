@@ -29,6 +29,15 @@ public class Currency {
   @OneToMany(mappedBy = "currency", orphanRemoval = true, fetch = FetchType.LAZY)
   private List<Rates> rates = new ArrayList<>();
 
+  public Currency() {}
+
+  public Currency(int currencyCode, String charCode, int nominal, String currencyName){
+    this.currencyCode = currencyCode;
+    this.charCode = charCode;
+    this.nominal = nominal;
+    this.currencyName = currencyName;
+  }
+
   public int getId() {
     return id;
   }

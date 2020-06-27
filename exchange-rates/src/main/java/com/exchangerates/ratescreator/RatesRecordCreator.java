@@ -13,4 +13,8 @@ public class RatesRecordCreator {
   public Rates createNewRatesTableRecord(float rate, LocalDate date, Currency currencyFK){
     return new Rates(rate, date, currencyFK);
   }
+
+  public Currency createNewRatesTableRecord(int currencyCode, String charCode, int nominal, String currencyName) {
+    return new Currency(currencyCode, charCode, nominal, currencyName);
+  }
 }
