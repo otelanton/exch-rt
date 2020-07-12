@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +27,10 @@ public class Currency {
   private int currencyCode;
   @Column(nullable = false)
   private int nominal;
-  @OneToMany(mappedBy = "currency", orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "currency",
+    orphanRemoval = true, 
+    cascade = CascadeType.ALL, 
+    fetch = FetchType.LAZY)
   private List<Rates> rates = new ArrayList<>();
 
   public Currency() {}
@@ -44,14 +48,6 @@ public class Currency {
 
   public void setId(int id) {
     this.id = id;
-  }
-
-  public String getName() {
-    return currencyName;
-  }
-
-  public void setName(String name) {
-    this.currencyName = name;
   }
 
   public String getCharCode() {
@@ -78,6 +74,14 @@ public class Currency {
     this.nominal = nominal;
   }
 
+  public String getCurrencyName() {
+    return currencyName;
+  }
+
+  public void setCurrencyName(String currencyName) {
+    this.currencyName = currencyName;
+  }
+
   public List<Rates> getRates() {
     return rates;
   }
@@ -91,15 +95,21 @@ public class Currency {
     currencyRates.setCurrency(this);
   }
 
-  public void removeRate(Rates currencyRates) {
-    rates.remove(currencyRates);
-    currencyRates.setCurrency(null);
+  public void removeRate(Rates currencyRate) {
+    rates.remove(currencyRate);
+    currencyRate.setCurrency(null);
+  }
+
+  public void removeRate(int index) {
+    Rates r = rates.get(0);
+    r.setCurrency(null);
+    rates.remove(r);
   }
 
   @Override
   public String toString() {
     return "Currency [charCode=" + charCode + ", currencyCode=" + currencyCode + ", currencyName=" + currencyName
-        + ", id=" + id + ", rates=" + rates + "]";
+        + ", id=" + id + "]";
   }
 
   @Override

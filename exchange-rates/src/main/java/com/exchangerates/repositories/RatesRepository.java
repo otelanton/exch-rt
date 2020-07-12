@@ -11,4 +11,5 @@ import org.springframework.data.repository.query.Param;
 public interface RatesRepository extends JpaRepository<Rates, Integer> {
   @Query("select r from Rates r left join fetch r.currency where r.currency.id = :id")
   List<Rates> findAllByCurrency(@Param("id") int id);
+  List<Rates> findAllByCurrency_CharCode(String charCode);
 }
