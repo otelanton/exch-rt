@@ -15,6 +15,8 @@ import com.exchangerates.entities.Currency;
 import com.exchangerates.entities.Rates;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.exchangerates.cache.InternalCache;
 import com.exchangerates.dao.DataAccessObject;
 import com.exchangerates.dao.DataAccessObjectImpl;
 
@@ -27,6 +29,7 @@ public class ScheduledInsertNewRate {
   private DataAccessObject dao;
   private TabelRecordCreator tableRecordCreator;
   private ParseExchangeRates parser;
+  private InternalCache cache;
 
   // @Scheduled(cron = "0 5 0 * * *")
   @Scheduled(fixedRate = 50000, initialDelay = 50000)
@@ -38,6 +41,7 @@ public class ScheduledInsertNewRate {
       LOG.info("\n{}", currency.toString());
       Rates newRate = create(currency);
       save(newRate);
+      cache.getExchangeRates(currency.getCharCode());
     }
   }
 
@@ -47,12 +51,18 @@ public class ScheduledInsertNewRate {
   }
 
   private void save(Rates rate){
+    // dao.save(rate);
     dao.save(rate);
   }
 
   /*
    * Setter methods for autowiring dependencies 
   */ 
+
+  @Autowired
+  public void setCache(InternalCache cache){
+    this.cache = cache;
+  }
 
   @Autowired
   public void setDataAccessObject(DataAccessObjectImpl dao){

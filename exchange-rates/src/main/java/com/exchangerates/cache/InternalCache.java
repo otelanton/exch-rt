@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +61,17 @@ public class InternalCache {
   public List<Rates> getExchangeRates(String charCode){
     logger.info("\n\tCahce Miss " + charCode);
     return dao.getAllExchangeRatesForCurrency(charCode);
+  }
+
+
+  @Cacheable(value = "rates")
+  public Page<Rates> getPagedRates(String charCode, Pageable page){
+    return dao.getPagedRatesByCharCode(charCode, page);
+  }
+
+  @Cacheable(cacheManager = "currenciesCacheManager", value = "currenciesDTO")
+  public CurrencyDTO getDto(String charCode){
+    return dao.dto(charCode);
   }
 
   /*

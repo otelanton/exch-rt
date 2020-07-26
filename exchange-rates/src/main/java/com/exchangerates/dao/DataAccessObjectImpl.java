@@ -9,6 +9,8 @@ import com.exchangerates.repositories.CurrencyRepository;
 import com.exchangerates.repositories.RatesRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,6 +48,25 @@ public class DataAccessObjectImpl implements DataAccessObject {
   public List<CurrencyDTO> getAllCurrencyDto(){
     return currencyRepository.findBy();
   }
+
+  @Override
+  public Rates latest(String charCode){
+    return ratesRepository.findTopByCurrency_CharCodeOrderByIdDesc(charCode);
+  }
+
+  @Override
+  public Page<Rates> getPagedRatesByCharCode(String charCode, Pageable pageable){
+    return ratesRepository.findAllByCurrency_CharCode(charCode, pageable);
+  }
+  
+  @Override
+  public CurrencyDTO dto(String charCode){
+    return currencyRepository.findByCharCode(charCode);
+  }
+
+  /*
+   * Setter methods for autowiring dependencies 
+  */ 
 
   @Autowired
   public void setRatesRepository(RatesRepository ratesRepository) {

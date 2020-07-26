@@ -8,18 +8,15 @@ import com.exchangerates.cache.InternalCache;
 import com.exchangerates.entities.Currency;
 import com.exchangerates.entities.Rates;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
 public class RatesService {
-
-  private static final Logger LOG = LoggerFactory.getLogger(RatesService.class);
 
   private InternalCache cache;
 
@@ -33,6 +30,14 @@ public class RatesService {
 
   public Currency getCurrency(String charCode) {
     return cache.getCurrencyByCharCode(charCode);
+  }
+
+  public Page<Rates> getPagedRates(String code, Pageable page){
+    return cache.getPagedRates(code, page);
+  }
+
+  public CurrencyDTO getDto(String charCode){
+    return cache.getDto(charCode);
   }
 
   /*

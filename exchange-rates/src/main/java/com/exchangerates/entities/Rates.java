@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Rates {
 
@@ -56,9 +58,10 @@ public class Rates {
     this.date = localDate;
   }
 
-  // public Currency getCurrency() {
-  // return currency;
-  // }
+  @JsonIgnore
+  public Currency getCurrency() {
+    return currency;
+  }
 
   public void setCurrency(Currency currency) {
     this.currency = currency;

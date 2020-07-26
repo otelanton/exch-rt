@@ -6,6 +6,9 @@ import com.exchangerates.entities.Currency;
 import com.exchangerates.entities.Rates;
 import com.exchangerates.entities.DTO.CurrencyDTO;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 public interface DataAccessObject {
   public List<Rates> getAllExchangeRatesForCurrency(String charCode);
   public void save(Rates entity);
@@ -13,4 +16,7 @@ public interface DataAccessObject {
   public Currency getCurrencyByCharCode(String charCode);
   public List<Currency> getAllCurrencies();
   public List<CurrencyDTO> getAllCurrencyDto();
+  public Rates latest(String charCode);
+  public Page<Rates> getPagedRatesByCharCode(String charCode, Pageable page);
+  public CurrencyDTO dto(String charCode);
 }

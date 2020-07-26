@@ -39,7 +39,7 @@ public class CaffeineCacheConfiguration {
     return Caffeine.newBuilder()
       .initialCapacity(100)
       .maximumSize(10000)
-      .expireAfterWrite(55, TimeUnit.SECONDS)
+      .expireAfterWrite(49, TimeUnit.SECONDS)
       // .expireAfterWrite(86300, TimeUnit.SECONDS)
       .removalListener((Object key, Object value, RemovalCause cause) -> {
         System.out.format("removal listerner called with key [%s], cause [%s], evicted [%S]\n", 

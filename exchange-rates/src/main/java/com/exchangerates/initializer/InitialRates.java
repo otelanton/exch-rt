@@ -1,11 +1,10 @@
 package com.exchangerates.initializer;
 
 import java.time.LocalDate;
-import java.time.Month;
+// import java.time.Month;
 
 import javax.annotation.PostConstruct;
 
-import com.exchangerates.cache.InternalCache;
 import com.exchangerates.dao.DataAccessObject;
 import com.exchangerates.dao.DataAccessObjectImpl;
 import com.exchangerates.entities.Currency;
@@ -27,16 +26,13 @@ public class InitialRates {
   private ParseExchangeRates parser;
   private XMLDocument document;
   private TabelRecordCreator creator;
-  private InternalCache cache;
   private DataAccessObject dao;
 
   @Autowired
-  public InitialRates(ParseExchangeRates parser, XMLDocument document, TabelRecordCreator creator, InternalCache cache,
-      DataAccessObjectImpl dao) {
+  public InitialRates(ParseExchangeRates parser, XMLDocument document, TabelRecordCreator creator, DataAccessObjectImpl dao) {
     this.parser = parser;
     this.document = document;
     this.creator = creator;
-    this.cache = cache;
     this.dao = dao;
   }
 
@@ -48,7 +44,7 @@ public class InitialRates {
   private void parseAndPersistInitialRates(){
     LocalDate end = LocalDate.now();
     // LocalDate start = end.minusMonths(6);
-    LocalDate start = end.minusDays(2);
+    LocalDate start = end.minusDays(4);
     Document doc = null;
     for(LocalDate date = start; date.isBefore(end); date = date.plusDays(1)){
       doc = document.createDocument(date);
