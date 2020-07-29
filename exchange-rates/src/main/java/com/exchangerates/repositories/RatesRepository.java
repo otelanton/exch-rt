@@ -15,5 +15,5 @@ public interface RatesRepository extends JpaRepository<Rates, Integer> {
   List<Rates> findAllByCurrency(@Param("id") int id);
   List<Rates> findAllByCurrency_CharCode(String charCode);
   Page<Rates> findAllByCurrency_CharCode(String charCode, Pageable page);
-  Rates findTopByCurrency_CharCodeOrderByIdDesc(String charCode);
+  Rates findTopByCurrencyIdOrderByIdDesc(int id);
 }

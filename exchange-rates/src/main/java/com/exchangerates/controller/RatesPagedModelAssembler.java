@@ -23,14 +23,14 @@ class RatesPagedModelAssembler {
 
   public PagedModel<EntityModel<Rates>> toModel(Page<Rates> page, String charCode, Pageable pageable){
 
-    Assert.notNull(page, "Page must not be null");
-    Assert.hasText(charCode, "CharCode must be specified");
-    Assert.notNull(pageable, "Pageable must not be null");
-
     return addLinksToPage(page, charCode, pageable);
   }
  
   private PagedModel<EntityModel<Rates>> addLinksToPage(Page<Rates> page, String charCode, Pageable pageable){
+
+    Assert.notNull(page, "Page must not be null");
+    Assert.hasText(charCode, "CharCode must be specified");
+    Assert.notNull(pageable, "Pageable must not be null");
 
     PagedModel<EntityModel<Rates>> model = assembler.toModel(page);
 

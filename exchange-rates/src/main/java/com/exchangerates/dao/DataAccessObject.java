@@ -16,7 +16,7 @@ public interface DataAccessObject {
   public Currency getCurrencyByCharCode(String charCode);
   public List<Currency> getAllCurrencies();
   public List<CurrencyDTO> getAllCurrencyDto();
-  public Rates latest(String charCode);
+  public Rates getLatestForCurrencyRate(int id);
   public Page<Rates> getPagedRatesByCharCode(String charCode, Pageable page);
-  public CurrencyDTO dto(String charCode);
+  public CurrencyDTO getCurrencyAsDto(String charCode);
 }

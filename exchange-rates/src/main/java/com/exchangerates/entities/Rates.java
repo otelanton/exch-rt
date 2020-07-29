@@ -17,15 +17,23 @@ public class Rates {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private long id;
   @Column(nullable = false)
   private float rate;
   @Column(nullable = false)
   private LocalDate date;
   @ManyToOne(fetch = FetchType.LAZY)
+  @JsonIgnore
   private Currency currency;
+  private float difference;
 
-  public Rates() {
+  public Rates() {}
+
+  public Rates(float rate, LocalDate date, Currency currency, float difference) {
+    this.rate = rate;
+    this.date = date;
+    this.currency = currency;
+    this.difference = difference;
   }
 
   public Rates(float rate, LocalDate date, Currency currency) {
@@ -34,11 +42,11 @@ public class Rates {
     this.currency = currency;
   }
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(long id) {
     this.id = id;
   }
 
@@ -58,13 +66,20 @@ public class Rates {
     this.date = localDate;
   }
 
-  @JsonIgnore
   public Currency getCurrency() {
     return currency;
   }
 
   public void setCurrency(Currency currency) {
     this.currency = currency;
+  }
+
+  public float getDifference() {
+    return difference;
+  }
+
+  public void setDifference(float difference) {
+    this.difference = difference;
   }
 
   @Override
@@ -95,7 +110,7 @@ public class Rates {
   public int hashCode() {
     int hashCode = 11;
     hashCode = (int) (31 * hashCode + this.rate);
-    hashCode = 31 * hashCode + this.id;
+    hashCode = 31 * hashCode + (int) this.id;
     hashCode = 31 * hashCode + this.date.hashCode();
     hashCode = 31 * hashCode + this.currency.hashCode();
     return hashCode;

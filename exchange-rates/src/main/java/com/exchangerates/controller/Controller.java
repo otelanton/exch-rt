@@ -2,7 +2,6 @@ package com.exchangerates.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.exchangerates.entities.DTO.CurrencyDTO;
 import com.exchangerates.entities.Rates;
@@ -43,9 +42,6 @@ public class Controller {
 
   @RequestMapping(value = "/currs", method = RequestMethod.GET)
   public ResponseEntity<CollectionModel<EntityModel<CurrencyDTO>>> allCurrencies(Pageable pageable){
-    // List<EntityModel<CurrencyDTO>> dtos = service.getAllCurrencies().stream()
-    //   .map(entity -> this::toModel)
-    //   .collect(Collectors.toList());
 
     List<CurrencyDTO> list = service.getAllCurrencies();
     List<EntityModel<CurrencyDTO>> dtos = new ArrayList<>();

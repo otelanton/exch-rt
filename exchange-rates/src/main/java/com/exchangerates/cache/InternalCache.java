@@ -71,7 +71,7 @@ public class InternalCache {
 
   @Cacheable(cacheManager = "currenciesCacheManager", value = "currenciesDTO")
   public CurrencyDTO getDto(String charCode){
-    return dao.dto(charCode);
+    return dao.getCurrencyAsDto(charCode);
   }
 
   /*

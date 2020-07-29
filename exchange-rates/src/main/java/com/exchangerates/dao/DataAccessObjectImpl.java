@@ -50,8 +50,8 @@ public class DataAccessObjectImpl implements DataAccessObject {
   }
 
   @Override
-  public Rates latest(String charCode){
-    return ratesRepository.findTopByCurrency_CharCodeOrderByIdDesc(charCode);
+  public Rates getLatestForCurrencyRate(int id){
+    return ratesRepository.findTopByCurrencyIdOrderByIdDesc(id);
   }
 
   @Override
@@ -60,7 +60,7 @@ public class DataAccessObjectImpl implements DataAccessObject {
   }
   
   @Override
-  public CurrencyDTO dto(String charCode){
+  public CurrencyDTO getCurrencyAsDto(String charCode){
     return currencyRepository.findByCharCode(charCode);
   }
 

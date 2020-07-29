@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TabelRecordCreator {
 
-  public Rates createNewTableRecord(float value, LocalDate date, Currency currencyFK){
-    Rates rate = new Rates(value, date, currencyFK);
+  public Rates createNewTableRecord(float value, LocalDate date, Currency currencyFK, float difference){
+    Rates rate = new Rates(value, date, currencyFK, difference);
     currencyFK.addRate(rate);
     return rate;
   }
