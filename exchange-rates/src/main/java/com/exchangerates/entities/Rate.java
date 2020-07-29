@@ -13,13 +13,13 @@ import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Rates {
+public class Rate {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   @Column(nullable = false)
-  private float rate;
+  private float value;
   @Column(nullable = false)
   private LocalDate date;
   @ManyToOne(fetch = FetchType.LAZY)
@@ -27,17 +27,17 @@ public class Rates {
   private Currency currency;
   private float difference;
 
-  public Rates() {}
+  public Rate() {}
 
-  public Rates(float rate, LocalDate date, Currency currency, float difference) {
-    this.rate = rate;
+  public Rate(float value, LocalDate date, Currency currency, float difference) {
+    this.value = value;
     this.date = date;
     this.currency = currency;
     this.difference = difference;
   }
 
-  public Rates(float rate, LocalDate date, Currency currency) {
-    this.rate = rate;
+  public Rate(float value, LocalDate date, Currency currency) {
+    this.value = value;
     this.date = date;
     this.currency = currency;
   }
@@ -50,12 +50,12 @@ public class Rates {
     this.id = id;
   }
 
-  public float getRate() {
-    return rate;
+  public float getValue() {
+    return value;
   }
 
-  public void setRate(float rate) {
-    this.rate = rate;
+  public void setValue(float value) {
+    this.value = value;
   }
 
   public LocalDate getDate() {
@@ -84,7 +84,7 @@ public class Rates {
 
   @Override
   public String toString() {
-    return "CurrencyRates [currency=" + currency.getCharCode() + ", date=" + date + ", id=" + id + ", rate=" + rate
+    return "CurrencyRates [currency=" + currency.getCharCode() + ", date=" + date + ", id=" + id + ", rate=" + value
         + "]";
   }
 
@@ -96,8 +96,8 @@ public class Rates {
       return true;
     if(getClass() != obj.getClass()) 
       return false;
-    Rates o = (Rates) obj;
-    if(this.rate != o.rate) 
+    Rate o = (Rate) obj;
+    if(this.value != o.value)
       return false;
     if(this.date != o.date) 
       return false;
@@ -109,7 +109,7 @@ public class Rates {
   @Override
   public int hashCode() {
     int hashCode = 11;
-    hashCode = (int) (31 * hashCode + this.rate);
+    hashCode = (int) (31 * hashCode + this.value);
     hashCode = 31 * hashCode + (int) this.id;
     hashCode = 31 * hashCode + this.date.hashCode();
     hashCode = 31 * hashCode + this.currency.hashCode();

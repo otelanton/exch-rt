@@ -1,9 +1,6 @@
 package com.exchangerates.initializer;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
-import java.util.Locale;
 // import java.time.Month;
 
 import javax.annotation.PostConstruct;
@@ -12,14 +9,13 @@ import com.exchangerates.RateValueDifference;
 import com.exchangerates.dao.DataAccessObject;
 import com.exchangerates.dao.DataAccessObjectImpl;
 import com.exchangerates.entities.Currency;
-import com.exchangerates.entities.Rates;
+import com.exchangerates.entities.Rate;
 import com.exchangerates.parse.ParseExchangeRates;
 import com.exchangerates.parse.document.XMLDocument;
 import com.exchangerates.ratescreator.TabelRecordCreator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -60,7 +56,7 @@ public class InitialRates {
           String parsedNodeCharCode = parser.getElementText("CharCode", (Element) list.item(i));
           Currency currencyAsForeignKey = dao.getCurrencyByCharCode(parsedNodeCharCode);
           float difference = RateValueDifference.getDifferenceBetweenRates(currencyAsForeignKey.getId(), newRateValue);
-          Rates rate = creator.createNewTableRecord(newRateValue, date, currencyAsForeignKey, difference);
+          Rate rate = creator.createNewTableRecord(newRateValue, date, currencyAsForeignKey, difference);
           dao.save(rate);
         }
       }

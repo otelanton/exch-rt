@@ -31,7 +31,7 @@ public class Currency {
     orphanRemoval = true, 
     cascade = CascadeType.ALL, 
     fetch = FetchType.LAZY)
-  private List<Rates> rates = new ArrayList<>();
+  private List<Rate> rates = new ArrayList<>();
 
   public Currency() {}
 
@@ -82,26 +82,26 @@ public class Currency {
     this.currencyName = currencyName;
   }
 
-  public List<Rates> getRates() {
+  public List<Rate> getRates() {
     return rates;
   }
 
-  public void setRates(List<Rates> rates) {
+  public void setRates(List<Rate> rates) {
     this.rates = rates;
   }
 
-  public void addRate(Rates currencyRates) {
+  public void addRate(Rate currencyRates) {
     rates.add(currencyRates);
     currencyRates.setCurrency(this);
   }
 
-  public void removeRate(Rates currencyRate) {
+  public void removeRate(Rate currencyRate) {
     rates.remove(currencyRate);
     currencyRate.setCurrency(null);
   }
 
   public void removeRate(int index) {
-    Rates r = rates.get(0);
+    Rate r = rates.get(0);
     r.setCurrency(null);
     rates.remove(r);
   }

@@ -2,7 +2,7 @@ package com.exchangerates;
 
 import com.exchangerates.dao.DataAccessObject;
 import com.exchangerates.dao.DataAccessObjectImpl;
-import com.exchangerates.entities.Rates;
+import com.exchangerates.entities.Rate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +19,10 @@ public class RateValueDifference {
   public static float getDifferenceBetweenRates(int foreignKeyCurrencyId, float newEntityRateValue){
     float differenceBetWeenRateValues = 0;
 
-    Rates latestRateEntity = dao.getLatestForCurrencyRate(foreignKeyCurrencyId);
+    Rate latestRateEntity = dao.getLatestForCurrencyRate(foreignKeyCurrencyId);
 
     if(latestRateEntity != null){
-      float difference = newEntityRateValue - latestRateEntity.getRate();
+      float difference = newEntityRateValue - latestRateEntity.getValue();
 
       String formattedValueString = changeDecimalFormatSymbol().format(difference);
 

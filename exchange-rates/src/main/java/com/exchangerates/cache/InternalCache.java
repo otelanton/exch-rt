@@ -6,7 +6,7 @@ import com.exchangerates.entities.DTO.CurrencyDTO;
 import com.exchangerates.dao.DataAccessObject;
 import com.exchangerates.dao.DataAccessObjectImpl;
 import com.exchangerates.entities.Currency;
-import com.exchangerates.entities.Rates;
+import com.exchangerates.entities.Rate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,14 +58,14 @@ public class InternalCache {
   }
 
   @Cacheable(unless = "#result == null", value = "rates")
-  public List<Rates> getExchangeRates(String charCode){
+  public List<Rate> getExchangeRates(String charCode){
     logger.info("\n\tCahce Miss " + charCode);
     return dao.getAllExchangeRatesForCurrency(charCode);
   }
 
 
   @Cacheable(value = "rates")
-  public Page<Rates> getPagedRates(String charCode, Pageable page){
+  public Page<Rate> getPagedRates(String charCode, Pageable page){
     return dao.getPagedRatesByCharCode(charCode, page);
   }
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.exchangerates.entities.DTO.CurrencyDTO;
-import com.exchangerates.entities.Rates;
+import com.exchangerates.entities.Rate;
 import com.exchangerates.service.RatesService;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -55,28 +55,28 @@ public class Controller {
   }
 
   @RequestMapping(value = "/page/week/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<PagedModel<EntityModel<Rates>>> pagedRatesOneWeek(
+  public ResponseEntity<PagedModel<EntityModel<Rate>>> pagedRatesOneWeek(
                 @PathVariable String charCode, 
                 @PageableDefault(size = WEEK) Pageable pageable) {
     return new ResponseEntity<>(getPagedModel(charCode, pageable), HttpStatus.OK);
   }
 
   @RequestMapping(value = "/page/month/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<PagedModel<EntityModel<Rates>>> pagedRatesOneMonth(
+  public ResponseEntity<PagedModel<EntityModel<Rate>>> pagedRatesOneMonth(
                 @PathVariable String charCode, 
                 @PageableDefault(size = MONTH) Pageable pageable) {
     return new ResponseEntity<>(getPagedModel(charCode, pageable), HttpStatus.OK);
   }
 
   @RequestMapping(value = "/page/days/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<PagedModel<EntityModel<Rates>>> pagedRatesTwoDays(
+  public ResponseEntity<PagedModel<EntityModel<Rate>>> pagedRatesTwoDays(
                 @PathVariable String charCode, 
                 @PageableDefault(size = 2) Pageable pageable) {
     return new ResponseEntity<>(getPagedModel(charCode, pageable), HttpStatus.OK);
   }
 
-  private PagedModel<EntityModel<Rates>> getPagedModel(String charCode, Pageable pageable){
-    Page<Rates> page = service.getPagedRates(charCode, pageable);
+  private PagedModel<EntityModel<Rate>> getPagedModel(String charCode, Pageable pageable){
+    Page<Rate> page = service.getPagedRates(charCode, pageable);
     return ratesPagedModelAssembler.toModel(page, charCode, pageable);
   }
 

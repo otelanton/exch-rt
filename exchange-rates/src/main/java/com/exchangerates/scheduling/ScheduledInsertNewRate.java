@@ -12,7 +12,7 @@ import com.exchangerates.ratescreator.TabelRecordCreator;
 import java.time.LocalDate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import com.exchangerates.entities.Currency;
-import com.exchangerates.entities.Rates;
+import com.exchangerates.entities.Rate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,13 +39,13 @@ public class ScheduledInsertNewRate {
       //remove the oldest rate
       currency.removeRate(0);
 
-      Rates newRate = create(currency);
+      Rate newRate = create(currency);
       dao.save(newRate);
       cache.getExchangeRates(currency.getCharCode());
     }
   }
 
-  private Rates create(Currency currency){
+  private Rate create(Currency currency){
     float value = parser.getRate(currency.getCharCode());
     float diff = RateValueDifference.getDifferenceBetweenRates(currency.getId(), value);
     return tableRecordCreator.createNewTableRecord(value, LocalDate.now(), currency, diff);

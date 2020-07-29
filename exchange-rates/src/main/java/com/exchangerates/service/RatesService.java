@@ -6,7 +6,7 @@ import java.util.List;
 import com.exchangerates.entities.DTO.CurrencyDTO;
 import com.exchangerates.cache.InternalCache;
 import com.exchangerates.entities.Currency;
-import com.exchangerates.entities.Rates;
+import com.exchangerates.entities.Rate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,7 @@ public class RatesService {
 
   private InternalCache cache;
 
-  public List<Rates> getExchangeRates(String charCode){
+  public List<Rate> getExchangeRates(String charCode){
     return cache.getExchangeRates(charCode);
   }
 
@@ -32,7 +32,7 @@ public class RatesService {
     return cache.getCurrencyByCharCode(charCode);
   }
 
-  public Page<Rates> getPagedRates(String code, Pageable page){
+  public Page<Rate> getPagedRates(String code, Pageable page){
     return cache.getPagedRates(code, page);
   }
 

@@ -3,15 +3,15 @@ package com.exchangerates.ratescreator;
 import java.time.LocalDate;
 
 import com.exchangerates.entities.Currency;
-import com.exchangerates.entities.Rates;
+import com.exchangerates.entities.Rate;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class TabelRecordCreator {
 
-  public Rates createNewTableRecord(float value, LocalDate date, Currency currencyFK, float difference){
-    Rates rate = new Rates(value, date, currencyFK, difference);
+  public Rate createNewTableRecord(float value, LocalDate date, Currency currencyFK, float difference){
+    Rate rate = new Rate(value, date, currencyFK, difference);
     currencyFK.addRate(rate);
     return rate;
   }
