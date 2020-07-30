@@ -9,7 +9,7 @@ import com.exchangerates.entities.Currency;
 import com.exchangerates.parse.ParseExchangeRates;
 import com.exchangerates.parse.ParseExchangeRatesImpl;
 import com.exchangerates.parse.document.XMLDocument;
-import com.exchangerates.ratescreator.TabelRecordCreator;
+import com.exchangerates.ratescreator.TableRecordCreator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ public class CurrencyTableDataInitializer {
   private Document document;
   private DataAccessObject dao;
   private ParseExchangeRates parser;
-  private TabelRecordCreator tableRecordCreator;
+  private TableRecordCreator tableRecordCreator;
   private InternalCache cache;
 
   @Autowired
@@ -65,7 +65,7 @@ public class CurrencyTableDataInitializer {
     String nodeCharCode = parser.getElementText(CHAR_CODE, element);
     String nodeName = parser.getElementText(NAME, element);
 
-    return tableRecordCreator.createNewTableRecord(nodeNumCode, nodeCharCode, nodeNominal, nodeName);
+    return new Currency(nodeNumCode, nodeCharCode, nodeNominal, nodeName);
   }
 
   @Autowired
@@ -74,7 +74,7 @@ public class CurrencyTableDataInitializer {
   }
 
   @Autowired
-  public void setRatesRecordCreator(TabelRecordCreator tableRecordCreator){
+  public void setRatesRecordCreator(TableRecordCreator tableRecordCreator){
     this.tableRecordCreator = tableRecordCreator;
   }
 

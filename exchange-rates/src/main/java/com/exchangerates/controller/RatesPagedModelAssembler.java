@@ -36,16 +36,10 @@ class RatesPagedModelAssembler {
 
     addCommonLinks(model, charCode, pageable);
 
-    switch(page.getSize()){
-      case 2:
-        addLinksToDaysPage(model, charCode, pageable);
-        break;
-      case 7:
-        addLinksToWeekPage(model, charCode, pageable);
-        break;
-      case 30:
-        addLinksToMonthPage(model, charCode, pageable);
-        break;  
+    switch (page.getSize()) {
+      case 2 -> addLinksToDaysPage(model, charCode, pageable);
+      case 7 -> addLinksToWeekPage(model, charCode, pageable);
+      case 30 -> addLinksToMonthPage(model, charCode, pageable);
     }
     return model;
   }

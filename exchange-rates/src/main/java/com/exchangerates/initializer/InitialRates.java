@@ -12,7 +12,6 @@ import com.exchangerates.entities.Currency;
 import com.exchangerates.entities.Rate;
 import com.exchangerates.parse.ParseExchangeRates;
 import com.exchangerates.parse.document.XMLDocument;
-import com.exchangerates.ratescreator.TabelRecordCreator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,16 +23,14 @@ import org.w3c.dom.NodeList;
 @Component
 public class InitialRates {
   
-  private ParseExchangeRates parser;
-  private XMLDocument document;
-  private TabelRecordCreator creator;
-  private DataAccessObject dao;
+  private final ParseExchangeRates parser;
+  private final XMLDocument document;
+  private final DataAccessObject dao;
 
   @Autowired
-  public InitialRates(ParseExchangeRates parser, XMLDocument document, TabelRecordCreator creator, DataAccessObjectImpl dao) {
+  public InitialRates(ParseExchangeRates parser, XMLDocument document, DataAccessObjectImpl dao) {
     this.parser = parser;
     this.document = document;
-    this.creator = creator;
     this.dao = dao;
   }
 
@@ -46,7 +43,7 @@ public class InitialRates {
     LocalDate end = LocalDate.now();
     // LocalDate start = end.minusMonths(6);
     LocalDate start = end.minusDays(8);
-    Document doc = null;
+    Document doc;
     for(LocalDate date = start; date.isBefore(end); date = date.plusDays(1)){
       doc = document.createDocument(date);
       NodeList list = getElementsList(doc);
@@ -56,7 +53,7 @@ public class InitialRates {
           String parsedNodeCharCode = parser.getElementText("CharCode", (Element) list.item(i));
           Currency currencyAsForeignKey = dao.getCurrencyByCharCode(parsedNodeCharCode);
           float difference = RateValueDifference.getDifferenceBetweenRates(currencyAsForeignKey.getId(), newRateValue);
-          Rate rate = creator.createNewTableRecord(newRateValue, date, currencyAsForeignKey, difference);
+          Rate rate = new Rate(newRateValue, date, currencyAsForeignKey, difference);
           dao.save(rate);
         }
       }

@@ -31,45 +31,45 @@ public class Controller {
   private final int MONTH = 30;
 
   private RatesService service;
-  private ModelAssembler assm;
+  private ModelAssembler modelAssembler;
   private RatesPagedModelAssembler ratesPagedModelAssembler;
 
-  @RequestMapping(value = "/dto/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<EntityModel<CurrencyDTO>> dto(@PathVariable String charCode, Pageable pageable){
+  @RequestMapping(value = "/currency/{charCode}", method = RequestMethod.GET)
+  public ResponseEntity<EntityModel<CurrencyDTO>> getCurrency(@PathVariable String charCode, Pageable pageable){
     CurrencyDTO model = service.getDto(charCode);
-    return new ResponseEntity<>( assm.toModel(model, charCode, pageable), HttpStatus.OK);
+    return new ResponseEntity<>( modelAssembler.toModel(model, charCode, pageable), HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/currs", method = RequestMethod.GET)
-  public ResponseEntity<CollectionModel<EntityModel<CurrencyDTO>>> allCurrencies(Pageable pageable){
+  @RequestMapping(value = "/all_currencies", method = RequestMethod.GET)
+  public ResponseEntity<CollectionModel<EntityModel<CurrencyDTO>>> getAllCurrencies(Pageable pageable){
 
     List<CurrencyDTO> list = service.getAllCurrencies();
     List<EntityModel<CurrencyDTO>> dtos = new ArrayList<>();
 
     for(CurrencyDTO entity : list){
       String code = entity.getCharCode();
-      dtos.add(assm.toModel(entity, code, pageable));
+      dtos.add(modelAssembler.toModel(entity, code, pageable));
     }
 
-    return new ResponseEntity<>( CollectionModel.of(dtos, linkTo(methodOn(Controller.class).allCurrencies(pageable)).withSelfRel()), HttpStatus.OK);
+    return new ResponseEntity<>( CollectionModel.of(dtos, linkTo(methodOn(Controller.class).getAllCurrencies(pageable)).withSelfRel()), HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/page/week/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<PagedModel<EntityModel<Rate>>> pagedRatesOneWeek(
+  @RequestMapping(value = "/week/{charCode}", method = RequestMethod.GET)
+  public ResponseEntity<PagedModel<EntityModel<Rate>>> getPagedRatesOneWeek(
                 @PathVariable String charCode, 
                 @PageableDefault(size = WEEK) Pageable pageable) {
     return new ResponseEntity<>(getPagedModel(charCode, pageable), HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/page/month/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<PagedModel<EntityModel<Rate>>> pagedRatesOneMonth(
+  @RequestMapping(value = "/month/{charCode}", method = RequestMethod.GET)
+  public ResponseEntity<PagedModel<EntityModel<Rate>>> getPagedRatesOneMonth(
                 @PathVariable String charCode, 
                 @PageableDefault(size = MONTH) Pageable pageable) {
     return new ResponseEntity<>(getPagedModel(charCode, pageable), HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/page/days/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<PagedModel<EntityModel<Rate>>> pagedRatesTwoDays(
+  @RequestMapping(value = "/days/{charCode}", method = RequestMethod.GET)
+  public ResponseEntity<PagedModel<EntityModel<Rate>>> getPagedRatesTwoDays(
                 @PathVariable String charCode, 
                 @PageableDefault(size = 2) Pageable pageable) {
     return new ResponseEntity<>(getPagedModel(charCode, pageable), HttpStatus.OK);
@@ -91,7 +91,7 @@ public class Controller {
 
   @Autowired
   public void setModelAssembler(ModelAssembler assm){
-    this.assm = assm;
+    this.modelAssembler = assm;
   }
 
   @Autowired

@@ -15,21 +15,13 @@ class LinkSupplier {
   }
   
   private static Link resolve(LinkType type, String charCode, Pageable pageable){
-    switch(type){
-      case DAYS:
-        return linkTo(methodOn(CONTROLLER).pagedRatesTwoDays(charCode, pageable)).withRel("two_days");
-      case WEEK:
-        return linkTo(methodOn(CONTROLLER).pagedRatesOneWeek(charCode, pageable)).withRel("week");
-      case MONTH:
-        return linkTo(methodOn(CONTROLLER).pagedRatesOneMonth(charCode, pageable)).withRel("month");
-      case LIST_CURRS:
-        return linkTo(methodOn(CONTROLLER).allCurrencies(pageable)).withRel("currencies");
-      case CURRENCY:
-        return linkTo(methodOn(CONTROLLER).dto(charCode, pageable)).withRel("currency");
-      case SELF_CURRENCY:
-        return linkTo(methodOn(CONTROLLER).dto(charCode, pageable)).withSelfRel();
-      default:
-        return null;
-    }
+    return switch (type) {
+      case DAYS -> linkTo(methodOn(CONTROLLER).getPagedRatesTwoDays(charCode, pageable)).withRel("two_days");
+      case WEEK -> linkTo(methodOn(CONTROLLER).getPagedRatesOneWeek(charCode, pageable)).withRel("week");
+      case MONTH -> linkTo(methodOn(CONTROLLER).getPagedRatesOneMonth(charCode, pageable)).withRel("month");
+      case LIST_CURRS -> linkTo(methodOn(CONTROLLER).getAllCurrencies(pageable)).withRel("currencies");
+      case CURRENCY -> linkTo(methodOn(CONTROLLER).getCurrency(charCode, pageable)).withRel("currency");
+      case SELF_CURRENCY -> linkTo(methodOn(CONTROLLER).getCurrency(charCode, pageable)).withSelfRel();
+    };
   }
 }

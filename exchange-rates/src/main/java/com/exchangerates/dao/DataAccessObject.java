@@ -10,13 +10,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface DataAccessObject {
-  public List<Rate> getAllExchangeRatesForCurrency(String charCode);
-  public void save(Rate entity);
-  public void save(Currency entity);
-  public Currency getCurrencyByCharCode(String charCode);
-  public List<Currency> getAllCurrencies();
-  public List<CurrencyDTO> getAllCurrencyDto();
-  public Rate getLatestForCurrencyRate(int id);
-  public Page<Rate> getPagedRatesByCharCode(String charCode, Pageable page);
-  public CurrencyDTO getCurrencyAsDto(String charCode);
+  List<Rate> getAllExchangeRatesForCurrency(String charCode);
+  void save(Rate entity);
+  void save(Currency entity);
+  Currency getCurrencyByCharCode(String charCode);
+  List<Currency> getAllCurrencies();
+  List<CurrencyDTO> getAllCurrencyDto();
+  Rate getLatestForCurrencyRate(int id);
+  Page<Rate> getPagedRatesByCharCode(String charCode, Pageable page);
+  CurrencyDTO getCurrencyAsDto(String charCode);
 }

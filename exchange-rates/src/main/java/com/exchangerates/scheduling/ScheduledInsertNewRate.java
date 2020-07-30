@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.exchangerates.parse.ParseExchangeRatesImpl;
 import com.exchangerates.parse.ParseExchangeRates;
-import com.exchangerates.ratescreator.TabelRecordCreator;
 
 import java.time.LocalDate;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -25,7 +24,6 @@ import com.exchangerates.dao.DataAccessObjectImpl;
 public class ScheduledInsertNewRate {
 
   private DataAccessObject dao;
-  private TabelRecordCreator tableRecordCreator;
   private ParseExchangeRates parser;
   private InternalCache cache;
 
@@ -39,16 +37,16 @@ public class ScheduledInsertNewRate {
       //remove the oldest rate
       currency.removeRate(0);
 
-      Rate newRate = create(currency);
+      Rate newRate = createRateForCurrency(currency);
       dao.save(newRate);
       cache.getExchangeRates(currency.getCharCode());
     }
   }
 
-  private Rate create(Currency currency){
+  private Rate createRateForCurrency(Currency currency){
     float value = parser.getRate(currency.getCharCode());
-    float diff = RateValueDifference.getDifferenceBetweenRates(currency.getId(), value);
-    return tableRecordCreator.createNewTableRecord(value, LocalDate.now(), currency, diff);
+    float difference = RateValueDifference.getDifferenceBetweenRates(currency.getId(), value);
+    return new Rate(value, LocalDate.now(), currency, difference);
   }
 
   /*
@@ -63,11 +61,6 @@ public class ScheduledInsertNewRate {
   @Autowired
   public void setDataAccessObject(DataAccessObjectImpl dao){
     this.dao = dao;
-  }
-
-  @Autowired
-  public void setRatesRecordCreator(TabelRecordCreator tableRecordCreator){
-    this.tableRecordCreator = tableRecordCreator;
   }
 
   @Autowired
