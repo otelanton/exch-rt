@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import com.exchangerates.entities.Currency;
 import com.exchangerates.entities.Rate;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.exchangerates.cache.InternalCache;
@@ -31,21 +30,22 @@ public class ScheduledInsertNewRate {
   @Scheduled(fixedRate = 50000, initialDelay = 50000)
   @Transactional
   public void execute() {
-    List<Currency> listOfCurrencies = dao.getAllCurrencies();
-    for (Currency currency : listOfCurrencies) {
+    dao.getAllCurrencies().forEach(this::removeOldestAndInsertNewRate);
+  }
 
-      //remove the oldest rate
-      currency.removeRate(0);
+  private void removeOldestAndInsertNewRate(Currency currency){
+    //remove the oldest rate
+    currency.removeRate(0);
 
-      Rate newRate = createRateForCurrency(currency);
-      dao.save(newRate);
-      cache.getExchangeRates(currency.getCharCode());
-    }
+    Rate newRate = createRateForCurrency(currency);
+    dao.save(newRate);
+    cache.getExchangeRates(currency.getId());
   }
 
   private Rate createRateForCurrency(Currency currency){
     float value = parser.getRate(currency.getCharCode());
-    float difference = RateValueDifference.getDifferenceBetweenRates(currency.getId(), value);
+    Float newEntityRateValue = dao.getLatestForCurrencyRate(currency.getId());
+    float difference = RateValueDifference.getDifferenceBetweenRates(newEntityRateValue, value);
     return new Rate(value, LocalDate.now(), currency, difference);
   }
 

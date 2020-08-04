@@ -1,47 +1,32 @@
 package com.exchangerates;
 
-import com.exchangerates.dao.DataAccessObject;
-import com.exchangerates.dao.DataAccessObjectImpl;
-import com.exchangerates.entities.Rate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-
-@Component
 public class RateValueDifference {
 
-  private static DataAccessObject dao;
-
-  public static float getDifferenceBetweenRates(int foreignKeyCurrencyId, float newEntityRateValue){
-    float differenceBetWeenRateValues = 0;
-
-    Rate latestRateEntity = dao.getLatestForCurrencyRate(foreignKeyCurrencyId);
-
-    if(latestRateEntity != null){
-      float difference = newEntityRateValue - latestRateEntity.getValue();
-
-      String formattedValueString = changeDecimalFormatSymbol().format(difference);
-
-      differenceBetWeenRateValues = Float.parseFloat(formattedValueString);
+  public static float getDifferenceBetweenRates(float newEntityRateValue, float latestEntityRateValue) {
+    if (newEntityRateValue <= 0 || latestEntityRateValue <= 0) {
+      throw new IllegalArgumentException("Rate value must be greater than 0.");
     }
 
-    return differenceBetWeenRateValues;
+    float difference = newEntityRateValue - latestEntityRateValue;
+
+    String formattedValueString = changeDecimalFormatSymbol().format(difference);
+
+    return Float.parseFloat(formattedValueString);
   }
 
 
-  private static DecimalFormat changeDecimalFormatSymbol(){
+  private static DecimalFormat changeDecimalFormatSymbol() {
+
+    final String PATTERN = "#0.0000";
+    final char SEPARATOR = '.';
+
     Locale currentLocale = Locale.getDefault();
     DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
-    otherSymbols.setDecimalSeparator('.');
-    return new DecimalFormat("#0.0000", otherSymbols);
-  }
-
-  @Autowired
-  public void setDataAccessObject(DataAccessObjectImpl dao){
-    RateValueDifference.dao = dao;
+    otherSymbols.setDecimalSeparator(SEPARATOR);
+    return new DecimalFormat(PATTERN, otherSymbols);
   }
 }

@@ -47,12 +47,13 @@ public class InitialRates {
     for(LocalDate date = start; date.isBefore(end); date = date.plusDays(1)){
       doc = document.createDocument(date);
       NodeList list = getElementsList(doc);
-      for(int i = 0; i < list.getLength(); i++){
+//      for(int i = 0; i < list.getLength(); i++){
+      for(int i = 0; i < 2; i++){
         if(list.item(i).getNodeType() == Node.ELEMENT_NODE){
-          float newRateValue = getNewRateValue((Element) list.item(i));
-          String parsedNodeCharCode = parser.getElementText("CharCode", (Element) list.item(i));
-          Currency currencyAsForeignKey = dao.getCurrencyByCharCode(parsedNodeCharCode);
-          float difference = RateValueDifference.getDifferenceBetweenRates(currencyAsForeignKey.getId(), newRateValue);
+          Element element = (Element) list.item(i);
+          float newRateValue = getNewRateValue(element);
+          Currency currencyAsForeignKey = parseCurrencyCharCodeAndGet(element);
+          float difference = getDifferenceBetweenRates(newRateValue, currencyAsForeignKey.getId());
           Rate rate = new Rate(newRateValue, date, currencyAsForeignKey, difference);
           dao.save(rate);
         }
@@ -60,13 +61,36 @@ public class InitialRates {
     }
   }
 
+  private float getDifferenceBetweenRates(float newRateValue, int id){
+    float difference = 0;
+
+    Float latestRateValue = dao.getLatestForCurrencyRate(id);
+    if (latestRateValue != null){
+      difference = RateValueDifference.getDifferenceBetweenRates(newRateValue, latestRateValue);
+    }
+
+    return difference;
+  }
+
+  private Currency parseCurrencyCharCodeAndGet(Element element){
+    final String CHARCODE_TAGNAME = "CharCode";
+
+    String parsedNodeCharCode = parser.getElementText(CHARCODE_TAGNAME, element);
+
+    return dao.getCurrencyByCharCode(parsedNodeCharCode);
+  }
+
   private float getNewRateValue(Element element){
-    String parsedNodeRateValue = parser.getElementText("Value", element);
+    final String VALUE_TAGNAME = "Value";
+
+    String parsedNodeRateValue = parser.getElementText(VALUE_TAGNAME, element);
+
     return Float.parseFloat(parsedNodeRateValue);
   }
 
   private NodeList getElementsList(Document document){
     document.getDocumentElement().normalize();
+
     return document.getElementsByTagName("Valute");
   }
 }
