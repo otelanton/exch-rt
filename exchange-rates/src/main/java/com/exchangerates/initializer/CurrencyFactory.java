@@ -1,0 +1,46 @@
+package com.exchangerates.initializer;
+
+import com.exchangerates.dao.DataAccessObject;
+import com.exchangerates.entities.Currency;
+import com.exchangerates.parse.ParseExchangeRates;
+import com.exchangerates.parse.ParseExchangeRates.Tags;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Element;
+
+import java.time.LocalDate;
+
+@Component
+public class CurrencyFactory {
+  private ParseExchangeRates parser;
+
+  @Autowired
+  CurrencyFactory(ParseExchangeRates parser){
+    this.parser = parser;
+  }
+
+  public Currency createNewCurrency(Element xmlElement){
+    int nominal = parseNominal(xmlElement);
+    int numCode = parseNumCode(xmlElement);
+    String charCode = parseCharCode(xmlElement);
+    String name = parseName(xmlElement);
+
+    return new Currency(numCode, charCode, nominal, name);
+  }
+
+  private int parseNominal(Element xmlElement){
+    return Integer.parseInt(parser.getTextFromXmlElement(Tags.NOMINAL, xmlElement));
+  }
+
+  private int parseNumCode(Element xmlElement){
+    return Integer.parseInt(parser.getTextFromXmlElement(Tags.NUMCODE, xmlElement));
+  }
+
+  private String parseCharCode(Element xmlElement){
+    return parser.getTextFromXmlElement(Tags.CHARCODE, xmlElement);
+  }
+
+  private String parseName(Element xmlElement){
+    return parser.getTextFromXmlElement(Tags.NAME, xmlElement);
+  }
+}

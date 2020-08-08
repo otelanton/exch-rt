@@ -6,7 +6,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.exchangerates.parse.document.XMLDocument;
+import com.exchangerates.parse.document.ExchangeRatesDocument;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +18,9 @@ import org.w3c.dom.Element;
 @Component
 public class ParseExchangeRatesImpl implements ParseExchangeRates {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ParseExchangeRates.class);
+  private ExchangeRatesDocument exchangeRatesDocument;
 
-  public ParseExchangeRatesImpl() {
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(ParseExchangeRates.class);
 
   public float getRate(String charCode) {
     if(charCode == null || charCode.isEmpty())
@@ -31,11 +30,29 @@ public class ParseExchangeRatesImpl implements ParseExchangeRates {
 
   private Document doc;
 
+  //parses value of given tag only in given document element
+  public String getTextFromXmlElement(Tags tag, Element xmlElement){
+    if(tag == null){
+      throw new IllegalArgumentException("Must supply tag");
+    }
+
+    if(xmlElement == null){
+      throw new IllegalArgumentException("XML element must not be empty");
+    }
+
+    return xmlElement.getElementsByTagName(tag.getTag()).item(0).getTextContent();
+  }
+
   private String parseXMLRates(String charCode) {
+    if(charCode.isEmpty() || charCode == null){
+      throw new IllegalArgumentException("CharCode must not be empty");
+    }
+
     String rateValue = "";
+    final String FORMAT = "/ValCurs/Valute[CharCode='%s']/Value[text()]";
 
     // format path string to look for rate value in node with requested charcode
-    String xPathValue = String.format("/ValCurs/Valute[CharCode='%s']/Value[text()]", charCode);
+    String xPathValue = String.format(FORMAT, charCode);
 
     try {
       if(this.doc != null)
@@ -46,10 +63,6 @@ public class ParseExchangeRatesImpl implements ParseExchangeRates {
     }
 
     return rateValue;
-  }
-
-  public String getElementText(String tagName, Element element){
-    return element.getElementsByTagName(tagName).item(0).getTextContent();
   }
 
   private String evaluateXPath(Document document, String xpathExpression) throws Exception {
@@ -74,7 +87,7 @@ public class ParseExchangeRatesImpl implements ParseExchangeRates {
   }
 
   @Autowired
-  public void setDocument(XMLDocument document){
-    this.doc = document.createDocument();
+  public void setDocument(ExchangeRatesDocument exchangeRatesDocument){
+    this.exchangeRatesDocument = exchangeRatesDocument;
   }
 }

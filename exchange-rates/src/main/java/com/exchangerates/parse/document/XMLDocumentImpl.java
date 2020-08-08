@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 @Component
-public class XMLDocumentImpl implements XMLDocument{
+public class XMLDocumentImpl implements ExchangeRatesDocument{
 
   public Document createDocument(LocalDate date){
     Document document = null;
@@ -43,14 +43,14 @@ public class XMLDocumentImpl implements XMLDocument{
   }
 
   private final String URL = "http://www.bnm.md/en/official_exchange_rates?get_xml=1&date=";
+  private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
   private String formatDate(LocalDate date){
-    return date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    return date.format(dtf);
   }
 
   private String formatDate(){
-    return LocalDate.now()
-      .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    return LocalDate.now().format(dtf);
   }
 
   private String formatUrl(String dateUrlQuery) {

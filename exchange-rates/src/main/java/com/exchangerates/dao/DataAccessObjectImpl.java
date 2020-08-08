@@ -1,10 +1,11 @@
 package com.exchangerates.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.exchangerates.entities.Currency;
 import com.exchangerates.entities.Rate;
-import com.exchangerates.entities.DTO.CurrencyDTO;
+import com.exchangerates.entities.dto.CurrencyDTO;
 import com.exchangerates.repositories.CurrencyRepository;
 import com.exchangerates.repositories.RateRepository;
 
@@ -16,17 +17,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class DataAccessObjectImpl implements DataAccessObject {
 
-  private RateRepository ratesRepository;
+  private RateRepository rateRepository;
   private CurrencyRepository currencyRepository;
 
   @Override
-  public List<Rate> getAllExchangeRatesForCurrency(String charCode) {
-    return ratesRepository.findAllByCurrency_CharCode(charCode);
+  public List<Rate> getAllExchangeRatesByCurrencyId(int id) {
+    return rateRepository.findAllByCurrencyId(id);
   }
 
   @Override
   public void save(Rate entity) {
-    ratesRepository.save(entity);
+    rateRepository.save(entity);
   }
 
   @Override
@@ -46,22 +47,32 @@ public class DataAccessObjectImpl implements DataAccessObject {
 
   @Override
   public List<CurrencyDTO> getAllCurrencyDto(){
-    return currencyRepository.findBy();
+    return currencyRepository.findCurrencyDtoListBy();
   }
 
   @Override
-  public Rate getLatestForCurrencyRate(int id){
-    return ratesRepository.findTopByCurrencyIdOrderByIdDesc(id);
+  public Float getLatestRateByCurrencyId(int id){
+    return rateRepository.findLatestByCurrencyId(id);
   }
 
   @Override
-  public Page<Rate> getPagedRatesByCharCode(String charCode, Pageable pageable){
-    return ratesRepository.findAllByCurrency_CharCode(charCode, pageable);
+  public Page<Rate> getPagedRateByCharCode(String charCode, Pageable pageable){
+    return rateRepository.findAllByCurrency_CharCode(charCode, pageable);
   }
   
   @Override
-  public CurrencyDTO getCurrencyAsDto(String charCode){
-    return currencyRepository.findByCharCode(charCode);
+  public CurrencyDTO getCurrencyDtoByCharCode(String charCode){
+    return currencyRepository.findCurrencyDtoByCharCode(charCode);
+  }
+
+  @Override
+  public CurrencyDTO getCurrencyDtoById(int id){
+    return currencyRepository.findCurrencyDtoById(id);
+  }
+
+  @Override
+  public List<Rate> getRateInRange(LocalDate startDate, LocalDate endDate, int id) {
+    return rateRepository.findInRange(startDate, endDate, id);
   }
 
   /*
@@ -69,8 +80,8 @@ public class DataAccessObjectImpl implements DataAccessObject {
   */ 
 
   @Autowired
-  public void setRatesRepository(RateRepository ratesRepository) {
-    this.ratesRepository = ratesRepository;
+  public void setRateRepository(RateRepository rateRepository) {
+    this.rateRepository = rateRepository;
   }
 
   @Autowired

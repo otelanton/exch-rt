@@ -90,29 +90,28 @@ public class Rate {
 
   @Override
   public boolean equals(Object obj) {
-    if(obj == null) 
-      return false;
     if(this == obj) 
       return true;
-    if(getClass() != obj.getClass()) 
+    if(!(obj instanceof Rate))
       return false;
     Rate o = (Rate) obj;
-    if(this.value != o.value)
-      return false;
-    if(this.date != o.date) 
-      return false;
-    if(this.currency != o.currency)
-      return false;
-    return true;
+
+    return this.currency.getId() == o.currency.getId()
+      && (Float.compare(this.value, o.value) == 0)
+      && this.date == o.date
+      && this.id == o.id
+      && (Float.compare(this.difference, o.difference) == 0);
   }
 
   @Override
   public int hashCode() {
     int hashCode = 11;
+
     hashCode = (int) (31 * hashCode + this.value);
     hashCode = 31 * hashCode + (int) this.id;
     hashCode = 31 * hashCode + this.date.hashCode();
     hashCode = 31 * hashCode + this.currency.hashCode();
+
     return hashCode;
   }
 }

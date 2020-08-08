@@ -1,14 +1,14 @@
-package com.exchangerates.entities.DTO;
+package com.exchangerates.entities.dto;
 
 public interface CurrencyDTO {
 
   Integer getId() ;  
 
-  String getCurrencyName() ;
+  String getName() ;
 
   String getCharCode() ;
 
-  Integer getCurrencyCode() ;
+  Integer getCode() ;
 
   Integer getNominal() ;
 }

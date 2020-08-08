@@ -20,11 +20,11 @@ public class Currency {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   @Column(nullable = false, length = 30)
-  private String currencyName;
+  private String name;
   @Column(nullable = false, length = 3)
   private String charCode;
   @Column(nullable = false)
-  private int currencyCode;
+  private int code;
   @Column(nullable = false)
   private int nominal;
   @OneToMany(mappedBy = "currency",
@@ -35,11 +35,11 @@ public class Currency {
 
   public Currency() {}
 
-  public Currency(int currencyCode, String charCode, int nominal, String currencyName){
-    this.currencyCode = currencyCode;
+  public Currency(int code, String charCode, int nominal, String name){
+    this.code = code;
     this.charCode = charCode;
     this.nominal = nominal;
-    this.currencyName = currencyName;
+    this.name = name;
   }
 
   public int getId() {
@@ -58,12 +58,12 @@ public class Currency {
     this.charCode = charCode;
   }
 
-  public int getCurrencyCode() {
-    return currencyCode;
+  public int getCode() {
+    return code;
   }
 
-  public void setCurrencyCode(int currencyCode) {
-    this.currencyCode = currencyCode;
+  public void setCode(int code) {
+    this.code = code;
   }
 
   public int getNominal() {
@@ -74,12 +74,12 @@ public class Currency {
     this.nominal = nominal;
   }
 
-  public String getCurrencyName() {
-    return currencyName;
+  public String getName() {
+    return name;
   }
 
-  public void setCurrencyName(String currencyName) {
-    this.currencyName = currencyName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   public List<Rate> getRates() {
@@ -108,41 +108,35 @@ public class Currency {
 
   @Override
   public String toString() {
-    return "Currency [charCode=" + charCode + ", currencyCode=" + currencyCode + ", currencyName=" + currencyName
+    return "Currency [charCode=" + charCode + ", currencyCode=" + code + ", currencyName=" + name
         + ", id=" + id + "]";
   }
 
   @Override
   public boolean equals(Object obj) {
-    if(obj == null) 
-      return false;
     if(this == obj) 
       return true;
-    if(getClass() != obj.getClass()) 
+    if(!(obj instanceof Currency))
       return false;
+
     Currency o = (Currency) obj;
-    if(this.currencyCode != o.currencyCode) 
-      return false;
-    if(this.currencyName != o.currencyName) 
-      return false;
-    if(this.nominal != o.nominal) 
-      return false;
-    if(this.charCode != o.charCode)
-      return false;
-    if(this.id != o.id) 
-      return false;
-    if(!this.rates.equals(o.rates)) 
-      return false;
-    return true;
+
+    return this.code == o.code
+      && this.name.equals(o.name)
+      && this.charCode.equals(o.charCode)
+      && this.nominal == o.nominal
+      && this.id == o.id;
   }
 
   @Override
   public int hashCode() {
     int hashCode = 11;
-    hashCode = 31 * hashCode + this.currencyName.hashCode();
+
+    hashCode = 31 * hashCode + this.name.hashCode();
     hashCode = 31 * hashCode + this.charCode.hashCode();
-    hashCode = 31 * hashCode + this.currencyCode;
+    hashCode = 31 * hashCode + this.code;
     hashCode = 31 * hashCode + this.id;
+
     return hashCode;
   }
 }

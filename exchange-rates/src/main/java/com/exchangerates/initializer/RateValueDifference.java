@@ -1,4 +1,4 @@
-package com.exchangerates;
+package com.exchangerates.initializer;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public class RateValueDifference {
 
-  public static float getDifferenceBetweenRates(float newEntityRateValue, float latestEntityRateValue) {
+  public static float calculateDifferenceBetweenRates(float newEntityRateValue, float latestEntityRateValue) {
     if (newEntityRateValue <= 0 || latestEntityRateValue <= 0) {
       throw new IllegalArgumentException("Rate value must be greater than 0.");
     }
