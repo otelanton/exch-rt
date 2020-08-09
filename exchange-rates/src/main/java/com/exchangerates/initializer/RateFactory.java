@@ -4,7 +4,6 @@ import com.exchangerates.dao.DataAccessObject;
 import com.exchangerates.entities.Currency;
 import com.exchangerates.entities.Rate;
 import com.exchangerates.parse.ParseExchangeRates;
-import com.exchangerates.parse.ParseExchangeRates.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
@@ -43,10 +42,10 @@ public class RateFactory {
   }
 
   private float getNewValue(Element xmlElement){
-    return Float.parseFloat(parser.getTextFromXmlElement(Tags.VALUE, xmlElement));
+    return Float.parseFloat(parser.parseValue(xmlElement));
   }
 
   private Currency getCurrency(Element xmlElement){
-    return dao.getCurrencyByCharCode(parser.getTextFromXmlElement(Tags.CHARCODE, xmlElement));
+    return dao.getCurrencyByCharCode(parser.parseCharCode(xmlElement));
   }
 }

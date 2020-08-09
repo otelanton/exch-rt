@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import java.time.LocalDate;
 
 @Component
 public class ParseExchangeRatesImpl implements ParseExchangeRates {
@@ -21,6 +24,61 @@ public class ParseExchangeRatesImpl implements ParseExchangeRates {
   private ExchangeRatesDocument exchangeRatesDocument;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ParseExchangeRates.class);
+
+  //Xml document's tag names required for retrieving values contained in whose tags
+  private enum Tags {
+    //name of the head tag of the node
+    VALUTE("Valute"),
+
+    //name of the tag with rate's charcode
+    CHARCODE("CharCode"),
+
+    //name of the tag with rate's value
+    VALUE("Value"),
+
+    //name of the tag with rate's name
+    NAME("Name"),
+
+    //name of the tag with rate's numcode
+    NUMCODE("NumCode"),
+
+    //name of the tag with rate's nominal
+    NOMINAL("Nominal");
+
+    private String tag;
+
+    Tags(String tag){
+      this.tag = tag;
+    }
+
+    public String getTag(){
+      return tag;
+    }
+  }
+
+  public String parseNumCode(Element element){
+    return getTextFromXmlElement(Tags.NUMCODE, element);
+  }
+
+  public String parseCharCode(Element element){
+    return getTextFromXmlElement(Tags.CHARCODE, element);
+  }
+
+  public String parseName(Element element){
+    return getTextFromXmlElement(Tags.NAME, element);
+  }
+
+  public String parseNominal(Element element){
+    return getTextFromXmlElement(Tags.NOMINAL, element);
+  }
+
+  public String parseValue(Element element){
+    return getTextFromXmlElement(Tags.VALUE, element);
+  }
+
+  public NodeList getXmlDocumentNodes(LocalDate date){
+    return exchangeRatesDocument.createDocument(date).getDocumentElement().getElementsByTagName(Tags.VALUTE.getTag());
+  }
 
   public float getRate(String charCode) {
     if(charCode == null || charCode.isEmpty())
@@ -31,7 +89,7 @@ public class ParseExchangeRatesImpl implements ParseExchangeRates {
   private Document doc;
 
   //parses value of given tag only in given document element
-  public String getTextFromXmlElement(Tags tag, Element xmlElement){
+  private String getTextFromXmlElement(Tags tag, Element xmlElement){
     if(tag == null){
       throw new IllegalArgumentException("Must supply tag");
     }

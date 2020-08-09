@@ -1,9 +1,7 @@
 package com.exchangerates.initializer;
 
-import com.exchangerates.dao.DataAccessObject;
 import com.exchangerates.entities.Currency;
 import com.exchangerates.parse.ParseExchangeRates;
-import com.exchangerates.parse.ParseExchangeRates.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
@@ -29,18 +27,18 @@ public class CurrencyFactory {
   }
 
   private int parseNominal(Element xmlElement){
-    return Integer.parseInt(parser.getTextFromXmlElement(Tags.NOMINAL, xmlElement));
+    return Integer.parseInt(parser.parseNominal(xmlElement));
   }
 
   private int parseNumCode(Element xmlElement){
-    return Integer.parseInt(parser.getTextFromXmlElement(Tags.NUMCODE, xmlElement));
+    return Integer.parseInt(parser.parseNumCode(xmlElement));
   }
 
   private String parseCharCode(Element xmlElement){
-    return parser.getTextFromXmlElement(Tags.CHARCODE, xmlElement);
+    return parser.parseCharCode(xmlElement);
   }
 
   private String parseName(Element xmlElement){
-    return parser.getTextFromXmlElement(Tags.NAME, xmlElement);
+    return parser.parseName(xmlElement);
   }
 }
