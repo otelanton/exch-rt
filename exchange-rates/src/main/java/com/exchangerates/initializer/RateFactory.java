@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import java.time.LocalDate;
 
 @Component
-public class RateFactory {
+class RateFactory {
 
   private ParseExchangeRates parser;
   private DataAccessObject dao;

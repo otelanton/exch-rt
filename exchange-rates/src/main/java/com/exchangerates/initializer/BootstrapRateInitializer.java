@@ -28,8 +28,11 @@ class BootstrapRateInitializer {
     LocalDate end = LocalDate.now();
     // LocalDate start = end.minusMonths(6);
     LocalDate start = end.minusDays(8);
-    for(LocalDate date = start; date.isBefore(end); date = date.plusDays(1)){
-      CreationExecutor.execute(ratesCreator ,date);
+
+    LocalDate date = start;
+    while(!date.isAfter(end)){
+      CreationExecutor.execute(ratesCreator, date);
+      date = date.plusDays(1);
     }
   }
 

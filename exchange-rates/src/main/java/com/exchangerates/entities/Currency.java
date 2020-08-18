@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -32,6 +33,11 @@ public class Currency {
     cascade = CascadeType.ALL, 
     fetch = FetchType.LAZY)
   private List<Rate> rates = new ArrayList<>();
+  @OneToMany(mappedBy = "currency",
+          orphanRemoval = true,
+          cascade = CascadeType.ALL,
+          fetch = FetchType.LAZY)
+  private List<Average> average = new ArrayList<>();
 
   public Currency() {}
 
@@ -90,6 +96,14 @@ public class Currency {
     this.rates = rates;
   }
 
+  public List<Average> getAverage(){
+    return average;
+  }
+
+  public void setAverage(List<Average> average){
+    this.average = average;
+  }
+
   public void addRate(Rate currencyRates) {
     rates.add(currencyRates);
     currencyRates.setCurrency(this);
@@ -104,6 +118,17 @@ public class Currency {
     Rate r = rates.get(0);
     r.setCurrency(null);
     rates.remove(r);
+  }
+
+  public void addAverage(Average entity){
+    average.add(entity);
+    entity.setCurrency(this);
+  }
+
+  public void removeAverage(int index){
+    Average a = average.get(0);
+    a.setCurrency(null);
+    average.remove(a);
   }
 
   @Override
@@ -130,12 +155,12 @@ public class Currency {
 
   @Override
   public int hashCode() {
-    int hashCode = 11;
+    int hashCode = Integer.hashCode(id);
 
-    hashCode = 31 * hashCode + this.name.hashCode();
-    hashCode = 31 * hashCode + this.charCode.hashCode();
-    hashCode = 31 * hashCode + this.code;
-    hashCode = 31 * hashCode + this.id;
+    hashCode = 31 * hashCode + name.hashCode();
+    hashCode = 31 * hashCode + charCode.hashCode();
+    hashCode = 31 * hashCode + Integer.hashCode(code);
+    hashCode = 31 * hashCode + Integer.hashCode(nominal);
 
     return hashCode;
   }

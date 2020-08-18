@@ -18,11 +18,15 @@ class CreationExecutor {
   }
 
   static void execute(Creator creator, LocalDate date){
-    NodeList nodeList = parser.getXmlDocumentNodes(date);
+    NodeList nodeList = getNodeList(date);
 
     for(int i = 0; i < 2; i++){
       Element xmlElement = (Element) nodeList.item(i);
       creator.create(date, xmlElement);
     }
+  }
+
+  private static NodeList getNodeList(LocalDate date){
+    return parser.getXmlDocumentNodes(date);
   }
 }

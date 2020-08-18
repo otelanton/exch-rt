@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Component
 @Qualifier("scheduled")
-public class ScheduledRatesCreator implements Creator {
+class ScheduledRatesCreator implements Creator {
   private DataAccessObject dataAccessObject;
   private ParseExchangeRates parser;
   private InitialRatesCreator initialRatesCreator;
@@ -33,6 +33,11 @@ public class ScheduledRatesCreator implements Creator {
   }
 
   private Currency getCurrency(Element xmlElement){
-    return dataAccessObject.getCurrencyByCharCode(parser.parseCharCode(xmlElement));
+    String charCode = getCharCode(xmlElement);
+    return dataAccessObject.getCurrencyByCharCode(charCode);
+  }
+
+  private String getCharCode(Element xmlElement){
+    return parser.parseCharCode(xmlElement);
   }
 }

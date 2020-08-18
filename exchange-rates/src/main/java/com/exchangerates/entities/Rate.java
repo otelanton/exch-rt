@@ -105,12 +105,11 @@ public class Rate {
 
   @Override
   public int hashCode() {
-    int hashCode = 11;
+    int hashCode = Long.hashCode(id);
 
-    hashCode = (int) (31 * hashCode + this.value);
-    hashCode = 31 * hashCode + (int) this.id;
-    hashCode = 31 * hashCode + this.date.hashCode();
-    hashCode = 31 * hashCode + this.currency.hashCode();
+    hashCode = 31 * hashCode + Float.hashCode(value);
+    hashCode = 31 * hashCode + date.hashCode();
+    hashCode = 31 * hashCode + currency.hashCode();
 
     return hashCode;
   }

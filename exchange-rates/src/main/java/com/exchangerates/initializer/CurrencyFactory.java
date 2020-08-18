@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 import java.time.LocalDate;
 
 @Component
-public class CurrencyFactory {
+class CurrencyFactory {
   private ParseExchangeRates parser;
 
   @Autowired

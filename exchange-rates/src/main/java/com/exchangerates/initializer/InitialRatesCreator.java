@@ -1,6 +1,7 @@
 package com.exchangerates.initializer;
 
 import com.exchangerates.dao.DataAccessObject;
+import com.exchangerates.entities.Rate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 
 @Component
 @Qualifier("initial")
-public class InitialRatesCreator implements Creator {
+class InitialRatesCreator implements Creator {
 
   private DataAccessObject dataAccessObject;
   private RateFactory factory;
@@ -23,6 +24,11 @@ public class InitialRatesCreator implements Creator {
 
   @Override
   public void create(LocalDate date, Element xmlElement) {
-    dataAccessObject.save(factory.createNewRate(date, xmlElement));
+    Rate newRate = getNewRate(date, xmlElement);
+    dataAccessObject.save(newRate);
+  }
+
+  private Rate getNewRate(LocalDate date, Element xmlElement){
+    return factory.createNewRate(date, xmlElement);
   }
 }
