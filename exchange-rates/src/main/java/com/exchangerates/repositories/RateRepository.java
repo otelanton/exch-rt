@@ -29,4 +29,8 @@ public interface RateRepository extends JpaRepository<Rate, Integer> {
   @Query(nativeQuery = true,
       value = "select * from rate where (date between :startDate and :endDate) and currency_id = :id")
   List<Rate> findInRange(LocalDate startDate, LocalDate endDate, int id);
+
+  @Query(nativeQuery = true,
+      value = "select * from rate where currency_id = :id order by month(:month)")
+  List<Rate> findByMonth(int id, int month);
 }
