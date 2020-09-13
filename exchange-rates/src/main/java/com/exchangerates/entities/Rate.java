@@ -36,12 +36,6 @@ public class Rate {
     this.difference = difference;
   }
 
-  public Rate(float value, LocalDate date, Currency currency) {
-    this.value = value;
-    this.date = date;
-    this.currency = currency;
-  }
-
   public long getId() {
     return id;
   }

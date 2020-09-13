@@ -16,9 +16,9 @@ public interface CurrencyRepository extends JpaRepository<Currency, Integer> {
   @Query("select c from Currency c left join fetch c.rates where c.charCode = :charCode")
   Currency findCurrencyByCharCode(@Param("charCode") String charCode);
 
-  List<CurrencyDTO> findCurrencyDtoListBy();
+  List<Currency> findCurrencyDtoListBy();
 
-  CurrencyDTO findCurrencyDtoByCharCode(String charCode);
+  Currency findCurrencyDtoByCharCode(String charCode);
 
   CurrencyDTO findCurrencyDtoById(int id);
 

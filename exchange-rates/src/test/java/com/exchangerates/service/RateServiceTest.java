@@ -4,10 +4,8 @@ import com.exchangerates.cache.InternalCache;
 import com.exchangerates.dao.DataAccessObjectImpl;
 import com.exchangerates.entities.Currency;
 import com.exchangerates.entities.Rate;
-import com.exchangerates.exception.CurrencyNotFoundException;
 import com.exchangerates.exception.DateOutOfRangeException;
 import com.exchangerates.exception.RateNotFoundException;
-import com.exchangerates.service.RateService;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,12 +28,12 @@ import java.util.List;
 public class RateServiceTest {
 
   @Autowired
-  RateService service;
+  private RateService service;
 
   @MockBean
-  DataAccessObjectImpl dao;
+  private DataAccessObjectImpl dao;
   @MockBean
-  InternalCache cache;
+  private InternalCache cache;
 
   private Currency dollarTestCurrency = new Currency(896,"USD",1,"US Dollar");
 
@@ -115,17 +113,6 @@ public class RateServiceTest {
   }
 
   @Test
-  void currencyNotFoundExceptionTest(){
-    String charCodeParamString = "test";
-    String currentMonth = Month.of(LocalDate.now().getMonthValue()).name();
-
-    Mockito.when(cache.getCurrency(charCodeParamString))
-            .thenReturn(null);
-
-    Assert.assertThrows(CurrencyNotFoundException.class, () -> service.getRateAverageForMonth(charCodeParamString, currentMonth));
-  }
-
-  @Test
   void getPagedRatesTest(){
     Mockito.when(cache.getPagedRates(Mockito.anyString(), Mockito.any(PageRequest.class)))
             .thenReturn(new PageImpl<>(new ArrayList<>(List.of(
@@ -144,7 +131,7 @@ public class RateServiceTest {
   }
 
   @Test
-  void getPagedRatesRateNotFoundException(){
+  void getPagedRatesThrowsRateNotFoundException(){
     Mockito.when(cache.getPagedRates(Mockito.anyString(), Mockito.any(PageRequest.class)))
             .thenReturn(Page.empty());
 

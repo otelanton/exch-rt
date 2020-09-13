@@ -1,5 +1,7 @@
 package com.exchangerates.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -28,16 +30,12 @@ public class Currency {
   private int code;
   @Column(nullable = false)
   private int nominal;
+  @JsonIgnore
   @OneToMany(mappedBy = "currency",
     orphanRemoval = true, 
     cascade = CascadeType.ALL, 
     fetch = FetchType.LAZY)
   private List<Rate> rates = new ArrayList<>();
-  @OneToMany(mappedBy = "currency",
-          orphanRemoval = true,
-          cascade = CascadeType.ALL,
-          fetch = FetchType.LAZY)
-  private List<Average> average = new ArrayList<>();
 
   public Currency() {}
 
@@ -96,14 +94,6 @@ public class Currency {
     this.rates = rates;
   }
 
-  public List<Average> getAverage(){
-    return average;
-  }
-
-  public void setAverage(List<Average> average){
-    this.average = average;
-  }
-
   public void addRate(Rate currencyRates) {
     rates.add(currencyRates);
     currencyRates.setCurrency(this);
@@ -118,17 +108,6 @@ public class Currency {
     Rate r = rates.get(0);
     r.setCurrency(null);
     rates.remove(r);
-  }
-
-  public void addAverage(Average entity){
-    average.add(entity);
-    entity.setCurrency(this);
-  }
-
-  public void removeAverage(int index){
-    Average a = average.get(0);
-    a.setCurrency(null);
-    average.remove(a);
   }
 
   @Override

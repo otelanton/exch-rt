@@ -9,6 +9,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CurrencyService{
@@ -23,11 +24,7 @@ public class CurrencyService{
   }
 
   public EntityModel<Currency> getCurrency(String charCode){
-    Currency currency = cache.getCurrency(charCode);
-
-    if(currency == null){
-      throw new CurrencyNotFoundException("Currency not found!", charCode);
-    }
+    Currency currency = Optional.ofNullable(cache.getCurrency(charCode)).orElseThrow(() -> new CurrencyNotFoundException("Currency not found!", charCode));
 
     return currencyModelAssembler.toModel(currency, charCode);
   }
