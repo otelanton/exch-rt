@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class RateServiceTest {
 
   @Autowired
