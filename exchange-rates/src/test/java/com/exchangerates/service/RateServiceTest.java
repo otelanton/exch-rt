@@ -22,8 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -45,13 +44,13 @@ public class RateServiceTest {
             .thenReturn(dollarTestCurrency);
 
     Mockito.when(dao.getRateForCurrencyByMonth(Mockito.anyInt(), Mockito.anyInt()))
-            .thenReturn(new ArrayList<>(List.of(
+            .thenReturn(Arrays.asList(
                     new Rate((float)16.9656, LocalDate.now(), dollarTestCurrency, (float)0.0666),
                     new Rate((float)16.8656, LocalDate.now().minusDays(1), dollarTestCurrency, (float)0.1666),
-                    new Rate((float)16.9036, LocalDate.now().minusDays(2), dollarTestCurrency, (float)-0.0666)))
+                    new Rate((float)16.9036, LocalDate.now().minusDays(2), dollarTestCurrency, (float)-0.0666))
             );
 
-    String currentMonth = Month.of(LocalDate.now().getMonthValue()).name();
+    int currentMonth = Month.of(LocalDate.now().getMonthValue()).getValue();
 
     double average = service.getRateAverageForMonth(Mockito.anyString(), currentMonth);
 
@@ -62,7 +61,7 @@ public class RateServiceTest {
   @Test
   void averageThrowsDateOutOfRangeExceptionTest(){
     String charCodeParamString = "test";
-    String monthParamValueCausesException = Month.of(LocalDate.now().minusMonths(7).getMonthValue()).name();
+    int monthParamValueCausesException = Month.of(LocalDate.now().minusMonths(7).getMonthValue()).getValue();
 
     Assert.assertThrows(DateOutOfRangeException.class, () -> service.getRateAverageForMonth(charCodeParamString, monthParamValueCausesException));
   }
@@ -73,13 +72,13 @@ public class RateServiceTest {
             .thenReturn(dollarTestCurrency);
 
     Mockito.when(dao.getRateInRange(Mockito.any(LocalDate.class), Mockito.any(LocalDate.class), Mockito.anyInt()))
-            .thenReturn(new ArrayList<>(List.of(
+            .thenReturn(Arrays.asList(
                     new Rate((float)16.9656, LocalDate.now(), dollarTestCurrency, (float)0.0666),
                     new Rate((float)16.8656, LocalDate.now().minusDays(1), dollarTestCurrency, (float)0.1666),
                     new Rate((float)16.9036, LocalDate.now().minusDays(2), dollarTestCurrency, (float)-0.0666),
                     new Rate((float)16.9656, LocalDate.now().minusDays(3), dollarTestCurrency, (float)0.0666),
                     new Rate((float)16.8656, LocalDate.now().minusDays(4), dollarTestCurrency, (float)0.1666),
-                    new Rate((float)16.9036, LocalDate.now().minusDays(5), dollarTestCurrency, (float)-0.0666)))
+                    new Rate((float)16.9036, LocalDate.now().minusDays(5), dollarTestCurrency, (float)-0.0666))
             );
 
     String testStartDateParam = LocalDate.now().minusDays(5).toString();
@@ -117,10 +116,10 @@ public class RateServiceTest {
   @Test
   void getPagedRatesTest(){
     Mockito.when(cache.getPagedRates(Mockito.anyString(), Mockito.any(PageRequest.class)))
-            .thenReturn(new PageImpl<>(new ArrayList<>(List.of(
+            .thenReturn(new PageImpl<>(Arrays.asList(
                     new Rate((float)16.9656, LocalDate.now(), dollarTestCurrency, (float)0.0666),
                     new Rate((float)16.8656, LocalDate.now().minusDays(1), dollarTestCurrency, (float)0.1666),
-                    new Rate((float)16.9036, LocalDate.now().minusDays(2), dollarTestCurrency, (float)-0.0666))))
+                    new Rate((float)16.9036, LocalDate.now().minusDays(2), dollarTestCurrency, (float)-0.0666)))
             );
 
     String charCodeParamString = "test";

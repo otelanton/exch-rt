@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Validated
@@ -26,7 +27,7 @@ public class RateController {
 
   @RequestMapping(value = "/page/{charCode}", method = RequestMethod.GET)
   public ResponseEntity<PagedModel<EntityModel<Rate>>> getPagedRates(
-          @PathVariable String charCode, @NotNull @RequestParam Integer page, @NotNull @RequestParam Integer size) {
+      @PathVariable String charCode, @NotNull @RequestParam Integer page, @NotNull @RequestParam Integer size) {
 
     PagedModel<EntityModel<Rate>> entityModelPagedModel = rateService.getPagedRates(charCode, page, size);
 
@@ -35,9 +36,7 @@ public class RateController {
 
   @RequestMapping(value = "/range/{charCode}", method = RequestMethod.GET)
   public ResponseEntity<CollectionModel<Rate>> getRateInRange(
-          @PathVariable String charCode,
-          @NotNull @RequestParam String startDate,
-          @NotNull @RequestParam String endDate) {
+      @PathVariable String charCode, @RequestParam String startDate, @RequestParam String endDate) {
 
     CollectionModel<Rate> rateInRange = rateService.getRatesInRage(startDate, endDate, charCode);
 
@@ -45,7 +44,7 @@ public class RateController {
   }
 
   @RequestMapping(value = "/average/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<Double> getAverage(@PathVariable String charCode, @RequestParam String month){
+  public ResponseEntity<Double> getAverage(@PathVariable String charCode, @NotNull @RequestParam Integer month){
     double averageRateValue = rateService.getRateAverageForMonth(charCode, month);
 
     return new ResponseEntity<>(averageRateValue, HttpStatus.OK);

@@ -18,7 +18,7 @@ public class CurrencyController {
 
   private CurrencyService service;
 
-  @RequestMapping(value = "/{charCode}", method = RequestMethod.GET)
+  @RequestMapping(value = "/single/{charCode}", method = RequestMethod.GET)
   public ResponseEntity<EntityModel<Currency>> getCurrency(@PathVariable String charCode){
     EntityModel<Currency> currency = service.getCurrency(charCode);
 

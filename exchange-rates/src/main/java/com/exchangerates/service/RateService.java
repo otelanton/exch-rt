@@ -1,7 +1,6 @@
 package com.exchangerates.service;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 
 import com.exchangerates.dao.DataAccessObject;
@@ -40,24 +39,24 @@ public class RateService {
     Page<Rate> ratePage = cache.getPagedRates(charCode, pageable);
 
     if(!ratePage.hasContent()){
-      throw new RateNotFoundException("Rate wasn't found.", charCode);
+      throw new RateNotFoundException("Rate wasn't found", charCode);
     }
 
     return ratesPagedModelAssembler.toModel(ratePage, charCode, pageable);
   }
 
-  public double getRateAverageForMonth(String charCode, String month){
-    int requestedMonthNumericValue = Month.valueOf(month.toUpperCase()).getValue();
+  public double getRateAverageForMonth(String charCode, int month){
+
     int thisMonthNumericValue = LocalDate.now().getMonthValue();
     int halfYearBeforeMonthNumericValue = LocalDate.now().minusMonths(6).getMonthValue();
 
-    if(requestedMonthNumericValue > thisMonthNumericValue || requestedMonthNumericValue < halfYearBeforeMonthNumericValue){
-      throw new DateOutOfRangeException("Month is out of range.", requestedMonthNumericValue);
+    if(month > thisMonthNumericValue || month < halfYearBeforeMonthNumericValue){
+      throw new DateOutOfRangeException("Month is out of range", month);
     }
 
     int currencyId = currencyService.getCurrencyId(charCode);
 
-    List<Rate> listOfRateForMonth = dao.getRateForCurrencyByMonth(currencyId, requestedMonthNumericValue);
+    List<Rate> listOfRateForMonth = dao.getRateForCurrencyByMonth(currencyId, month);
 
     return listOfRateForMonth.stream()
             .mapToDouble(Rate::getValue)
@@ -73,11 +72,11 @@ public class RateService {
     LocalDate startDateRangeLimit = LocalDate.parse(startDate);
 
     if(endDateRangeLimit.isAfter(today)){
-      throw new DateOutOfRangeException("Date is out of range.", endDate);
+      throw new DateOutOfRangeException("Date is out of range", endDate);
     }
 
     if(startDateRangeLimit.isBefore(today.minusMonths(6))){
-      throw new DateOutOfRangeException("Date is out of range.",startDate);
+      throw new DateOutOfRangeException("Date is out of range",startDate);
     }
 
     List<Rate> rateInRange = getRateInRange(startDateRangeLimit, endDateRangeLimit, charCode);

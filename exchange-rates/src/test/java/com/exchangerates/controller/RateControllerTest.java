@@ -35,17 +35,6 @@ class RateControllerTest {
   private RateService service;
 
   @Test
-  void missingServletRequestParameterTest() throws Exception {
-    mockMvc.perform(get("/rate/page/{charCode}", "kkk")
-                  .param("size", "5"))
-            .andDo(print())
-            .andExpect(status().is4xxClientError())
-            .andExpect(mvcResult -> assertTrue(mvcResult.getResolvedException() instanceof MissingServletRequestParameterException))
-            .andExpect(jsonPath("$.rejectedValue").value("page")
-    );
-  }
-
-  @Test
   void getPagedRatesTest() throws Exception {
     mockMvc.perform(get("/rate/page/{charCode}", "USD")
         .param("size", "5")
@@ -74,6 +63,6 @@ class RateControllerTest {
       .andExpect(status().isOk()
     );
 
-    Mockito.verify(service, Mockito.times(1)).getRateAverageForMonth(Mockito.anyString(), Mockito.anyString());
+    Mockito.verify(service, Mockito.times(1)).getRateAverageForMonth(Mockito.anyString(), Mockito.anyInt());
   }
 }

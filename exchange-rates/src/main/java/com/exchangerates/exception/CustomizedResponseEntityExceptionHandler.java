@@ -11,9 +11,11 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 
 @RestController
 @ControllerAdvice
@@ -35,28 +37,32 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
   }
 
   @Override
-  protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request){
-    return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getDescription(false), ex.getParameterName());
+  protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException exception, HttpHeaders headers, HttpStatus status, WebRequest request){
+    return buildResponseEntity(HttpStatus.BAD_REQUEST, exception.getMessage(), request.getDescription(false), exception.getParameterName());
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<Object> handleConstraintViolationException(Exception ex, WebRequest request){
-    return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), request.getDescription(false), ex.getCause().getCause());
+  public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException exception, WebRequest request){
+    String message = "";
+    Object rejectedParam = "";
+    for(ConstraintViolation<?> violation : exception.getConstraintViolations()) {
+      rejectedParam = violation.getInvalidValue();
+      message = String.format("Parameter %s must not be %s", violation.getPropertyPath().toString().split("\\.")[1], rejectedParam);
+    }
+    return buildResponseEntity(HttpStatus.BAD_REQUEST, message, request.getDescription(false), rejectedParam);
   }
 
   @ExceptionHandler(DateTimeParseException.class)
-  ResponseEntity<Object> handleDateTimeParseException(DateTimeParseException ex, WebRequest request){
-    return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getDescription(false), ex.getCause());
+  ResponseEntity<Object> handleDateTimeParseException(DateTimeParseException exception, WebRequest request){
+    return buildResponseEntity(HttpStatus.BAD_REQUEST, exception.getMessage(), request.getDescription(false), exception.getParsedString());
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-  ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, WebRequest request){
-    return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getDescription(false), ex.getValue());
-  }
-
-  @ExceptionHandler(IllegalArgumentException.class)
-  ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request){
-    return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getDescription(false), ex.getCause());
+  ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception, WebRequest request){
+    String providedType = Objects.requireNonNull(request.getParameter(exception.getName())).getClass().getSimpleName();
+    String requiredType = Objects.requireNonNull(exception.getRequiredType()).getSimpleName();
+    String message = String.format("Failed to convert value of type '%s' to required type '%s", providedType, requiredType);
+    return buildResponseEntity(HttpStatus.BAD_REQUEST, message, request.getDescription(false), exception.getValue());
   }
 
   private ResponseEntity<Object> buildResponseEntity(HttpStatus status, String exceptionMessage, String description, Object rejectedValue){
