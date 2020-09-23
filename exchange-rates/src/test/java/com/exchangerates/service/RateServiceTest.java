@@ -4,15 +4,12 @@ import com.exchangerates.cache.InternalCache;
 import com.exchangerates.dao.DataAccessObjectImpl;
 import com.exchangerates.entities.Currency;
 import com.exchangerates.entities.Rate;
-import com.exchangerates.exception.DateOutOfRangeException;
-import com.exchangerates.exception.RateNotFoundException;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
@@ -39,7 +36,7 @@ public class RateServiceTest {
   private Currency dollarTestCurrency = new Currency(896,"USD",1,"US Dollar");
 
   @Test
-  void averageTest(){
+  void getAverageTest(){
     Mockito.when(cache.getCurrency(Mockito.anyString()))
             .thenReturn(dollarTestCurrency);
 
@@ -56,14 +53,6 @@ public class RateServiceTest {
 
     Mockito.verify(dao, Mockito.times(1)).getRateForCurrencyByMonth(Mockito.anyInt(), Mockito.anyInt());
     Assert.assertNotEquals(0, average);
-  }
-
-  @Test
-  void averageThrowsDateOutOfRangeExceptionTest(){
-    String charCodeParamString = "test";
-    int monthParamValueCausesException = Month.of(LocalDate.now().minusMonths(7).getMonthValue()).getValue();
-
-    Assert.assertThrows(DateOutOfRangeException.class, () -> service.getRateAverageForMonth(charCodeParamString, monthParamValueCausesException));
   }
 
   @Test
@@ -96,24 +85,6 @@ public class RateServiceTest {
   }
 
   @Test
-  void getRateInRangeThrowsDateOutOfRangeExceptionAfterRangeDateTest(){
-    String dateParamValueCausesException = LocalDate.now().plusDays(1).toString();
-    String okDateParamValue = LocalDate.now().toString();
-    String charCodeParamString = "test";
-
-    Assert.assertThrows(DateOutOfRangeException.class, () -> service.getRatesInRage(okDateParamValue, dateParamValueCausesException, charCodeParamString));
-  }
-
-  @Test
-  void getRateInRangeThrowsDateOutOfRangeExceptionBeforeRangeDateTest(){
-    String dateParamValueCausesException = LocalDate.now().minusMonths(7).toString();
-    String okDateParamValue = LocalDate.now().toString();
-    String charCodeParamString = "test";
-
-    Assert.assertThrows(DateOutOfRangeException.class, () -> service.getRatesInRage(dateParamValueCausesException, okDateParamValue, charCodeParamString));
-  }
-
-  @Test
   void getPagedRatesTest(){
     Mockito.when(cache.getPagedRates(Mockito.anyString(), Mockito.any(PageRequest.class)))
             .thenReturn(new PageImpl<>(Arrays.asList(
@@ -129,15 +100,5 @@ public class RateServiceTest {
     Mockito.verify(cache, Mockito.times(1)).getPagedRates(Mockito.anyString(), Mockito.any(PageRequest.class));
     Assert.assertNotNull(pagedModel);
     Assert.assertTrue(pagedModel.hasLinks());
-  }
-
-  @Test
-  void getPagedRatesThrowsRateNotFoundException(){
-    Mockito.when(cache.getPagedRates(Mockito.anyString(), Mockito.any(PageRequest.class)))
-            .thenReturn(Page.empty());
-
-    String charCodeParamString = "test";
-
-    Assert.assertThrows(RateNotFoundException.class, () -> service.getPagedRates(charCodeParamString, 1, 1));
   }
 }

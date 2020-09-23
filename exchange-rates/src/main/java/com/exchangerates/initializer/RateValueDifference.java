@@ -18,7 +18,6 @@ class RateValueDifference {
     return Float.parseFloat(formattedValueString);
   }
 
-
   private static DecimalFormat changeDecimalFormatSymbol() {
 
     final String PATTERN = "#0.0000";

@@ -28,7 +28,6 @@ public class RateController {
   @RequestMapping(value = "/page/{charCode}", method = RequestMethod.GET)
   public ResponseEntity<PagedModel<EntityModel<Rate>>> getPagedRates(
       @PathVariable String charCode, @NotNull @RequestParam Integer page, @NotNull @RequestParam Integer size) {
-
     PagedModel<EntityModel<Rate>> entityModelPagedModel = rateService.getPagedRates(charCode, page, size);
 
     return new ResponseEntity<>(entityModelPagedModel, HttpStatus.OK);
@@ -36,8 +35,7 @@ public class RateController {
 
   @RequestMapping(value = "/range/{charCode}", method = RequestMethod.GET)
   public ResponseEntity<CollectionModel<Rate>> getRateInRange(
-      @PathVariable String charCode, @RequestParam String startDate, @RequestParam String endDate) {
-
+      @PathVariable String charCode, @NotBlank @RequestParam String startDate, @NotBlank @RequestParam String endDate) {
     CollectionModel<Rate> rateInRange = rateService.getRatesInRage(startDate, endDate, charCode);
 
     return new ResponseEntity<>(rateInRange, HttpStatus.OK);

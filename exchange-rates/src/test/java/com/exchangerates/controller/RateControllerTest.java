@@ -2,8 +2,6 @@ package com.exchangerates.controller;
 
 import com.exchangerates.cache.InternalCache;
 import com.exchangerates.dao.DataAccessObjectImpl;
-import com.exchangerates.repositories.CurrencyRepository;
-import com.exchangerates.repositories.RateRepository;
 import com.exchangerates.service.RateService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,12 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RateController.class)
@@ -25,10 +19,6 @@ class RateControllerTest {
   private MockMvc mockMvc;
   @MockBean
   private InternalCache cache;
-  @MockBean
-  private RateRepository rateRepository;
-  @MockBean
-  private CurrencyRepository currencyRepository;
   @MockBean
   private DataAccessObjectImpl dao;
   @MockBean
@@ -59,7 +49,7 @@ class RateControllerTest {
   @Test
   void getAverageTest() throws Exception {
     mockMvc.perform(get("/rate/average/{charCode}", "USD")
-        .param("month", "september"))
+        .param("month", "1"))
       .andExpect(status().isOk()
     );
 
