@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolation;
@@ -43,10 +44,13 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException exception, WebRequest request){
-    String message = "";
-    Object rejectedParam = "";
+    String message = null;
+    Object rejectedParam = null;
     for(ConstraintViolation<?> violation : exception.getConstraintViolations()) {
       rejectedParam = violation.getInvalidValue();
+      if(rejectedParam.equals("")){
+        rejectedParam = "blank";
+      }
       message = String.format("Parameter %s must not be %s", violation.getPropertyPath().toString().split("\\.")[1], rejectedParam);
     }
     return buildResponseEntity(HttpStatus.BAD_REQUEST, message, request.getDescription(false), rejectedParam);
@@ -63,6 +67,11 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     String requiredType = Objects.requireNonNull(exception.getRequiredType()).getSimpleName();
     String message = String.format("Failed to convert value of type '%s' to required type '%s", providedType, requiredType);
     return buildResponseEntity(HttpStatus.BAD_REQUEST, message, request.getDescription(false), exception.getValue());
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException exception, HttpHeaders headers, HttpStatus status, WebRequest request){
+    return buildResponseEntity(HttpStatus.NOT_FOUND, exception.getMessage(), request.getDescription(false), exception.getRequestURL());
   }
 
   private ResponseEntity<Object> buildResponseEntity(HttpStatus status, String exceptionMessage, String description, Object rejectedValue){
