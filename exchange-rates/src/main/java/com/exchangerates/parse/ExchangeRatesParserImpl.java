@@ -19,11 +19,11 @@ import org.w3c.dom.NodeList;
 import java.time.LocalDate;
 
 @Component
-public class ParseExchangeRatesImpl implements ParseExchangeRates {
+public class ExchangeRatesParserImpl implements ExchangeRatesParser {
 
   private ExchangeRatesDocument exchangeRatesDocument;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ParseExchangeRates.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExchangeRatesParser.class);
 
   //Xml document's tag names required for retrieving values contained in whose tags
   private enum Tags {

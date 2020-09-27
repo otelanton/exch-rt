@@ -5,7 +5,7 @@ import org.w3c.dom.NodeList;
 
 import java.time.LocalDate;
 
-public interface ParseExchangeRates {
+public interface ExchangeRatesParser {
 
   float getRate(String charCode);
 
