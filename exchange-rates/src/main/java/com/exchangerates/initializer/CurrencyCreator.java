@@ -1,7 +1,8 @@
 package com.exchangerates.initializer;
 
 import com.exchangerates.dao.DataAccessObject;
-import com.exchangerates.entities.Currency;
+import com.exchangerates.domain.Currency;
+import com.exchangerates.initializer.factory.EntitiesFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,10 +15,10 @@ import java.time.LocalDate;
 class CurrencyCreator implements Creator {
 
   private DataAccessObject dataAccessObject;
-  private CurrencyFactory currencyFactory;
+  private EntitiesFactory currencyFactory;
 
   @Autowired
-  public CurrencyCreator(DataAccessObject dataAccessObject, CurrencyFactory currencyFactory) {
+  public CurrencyCreator(DataAccessObject dataAccessObject, @Qualifier("currency_f") EntitiesFactory currencyFactory) {
     this.dataAccessObject = dataAccessObject;
     this.currencyFactory = currencyFactory;
   }
@@ -28,6 +29,6 @@ class CurrencyCreator implements Creator {
   }
 
   private Currency getNewCurrency(Element xmlElement) {
-    return currencyFactory.createNewCurrency(xmlElement);
+    return (Currency) currencyFactory.getInstance(LocalDate.now(), xmlElement);
   }
 }

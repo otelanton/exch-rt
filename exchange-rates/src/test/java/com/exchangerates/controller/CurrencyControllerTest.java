@@ -1,6 +1,5 @@
 package com.exchangerates.controller;
 
-import com.exchangerates.cache.InternalCache;
 import com.exchangerates.dao.DataAccessObjectImpl;
 import com.exchangerates.repositories.CurrencyRepository;
 import com.exchangerates.repositories.RateRepository;
@@ -19,8 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CurrencyControllerTest {
   @Autowired
   private MockMvc mockMvc;
-  @MockBean
-  private InternalCache cache;
   @MockBean
   private RateRepository rateRepository;
   @MockBean

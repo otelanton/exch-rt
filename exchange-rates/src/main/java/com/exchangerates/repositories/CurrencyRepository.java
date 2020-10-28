@@ -1,9 +1,6 @@
 package com.exchangerates.repositories;
 
-import java.util.List;
-
-import com.exchangerates.entities.Currency;
-import com.exchangerates.entities.dto.CurrencyDTO;
+import com.exchangerates.domain.Currency;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,10 +13,6 @@ public interface CurrencyRepository extends JpaRepository<Currency, Integer> {
   @Query("select c from Currency c left join fetch c.rates where c.charCode = :charCode")
   Currency findCurrencyByCharCode(@Param("charCode") String charCode);
 
-  List<Currency> findCurrencyDtoListBy();
-
-  Currency findCurrencyDtoByCharCode(String charCode);
-
-  CurrencyDTO findCurrencyDtoById(int id);
+  Currency findCurrencyById(int id);
 
 }

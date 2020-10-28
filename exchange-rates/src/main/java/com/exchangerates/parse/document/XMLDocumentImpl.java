@@ -54,6 +54,6 @@ public class XMLDocumentImpl implements ExchangeRatesDocument{
   }
 
   private String formatUrl(String dateUrlQuery) {
-    return this.URL + dateUrlQuery;
+    return this.URL.concat(dateUrlQuery);
   }
 }

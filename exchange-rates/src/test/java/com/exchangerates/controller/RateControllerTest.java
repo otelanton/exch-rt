@@ -1,6 +1,5 @@
 package com.exchangerates.controller;
 
-import com.exchangerates.cache.InternalCache;
 import com.exchangerates.dao.DataAccessObjectImpl;
 import com.exchangerates.service.RateService;
 import org.junit.jupiter.api.Test;
@@ -10,6 +9,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,8 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RateControllerTest {
   @Autowired
   private MockMvc mockMvc;
-  @MockBean
-  private InternalCache cache;
   @MockBean
   private DataAccessObjectImpl dao;
   @MockBean
@@ -48,6 +47,9 @@ class RateControllerTest {
 
   @Test
   void getAverageTest() throws Exception {
+    Mockito.when(service.getRateAverageForMonth(Mockito.anyString(), Mockito.anyInt()))
+      .thenReturn(BigDecimal.ZERO);
+
     mockMvc.perform(get("/rate/average/{charCode}", "USD")
         .param("month", "1"))
       .andExpect(status().isOk()

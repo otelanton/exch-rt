@@ -1,12 +1,16 @@
 package com.exchangerates.dao;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.exchangerates.entities.Currency;
-import com.exchangerates.entities.Rate;
-import com.exchangerates.entities.dto.CurrencyDTO;
+import com.exchangerates.domain.Average;
+import com.exchangerates.domain.Currency;
+import com.exchangerates.domain.Month;
+import com.exchangerates.domain.Rate;
+import com.exchangerates.repositories.AverageRepository;
 import com.exchangerates.repositories.CurrencyRepository;
+import com.exchangerates.repositories.MonthRepository;
 import com.exchangerates.repositories.RateRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +23,20 @@ public class DataAccessObjectImpl implements DataAccessObject {
 
   private RateRepository rateRepository;
   private CurrencyRepository currencyRepository;
+  private AverageRepository averageRepository;
+  private MonthRepository monthRepository;
+
+  @Autowired
+  DataAccessObjectImpl(RateRepository rateRepository, CurrencyRepository currencyRepository, AverageRepository averageRepository, MonthRepository monthRepository){
+    this.rateRepository = rateRepository;
+    this.currencyRepository = currencyRepository;
+    this.averageRepository = averageRepository;
+    this.monthRepository = monthRepository;
+  }
 
   @Override
   public List<Rate> getAllExchangeRatesByCurrencyId(int id) {
-    return rateRepository.findAllByCurrencyId(id);
+    return rateRepository.findAllByCurrency(id);
   }
 
   @Override
@@ -46,12 +60,7 @@ public class DataAccessObjectImpl implements DataAccessObject {
   }
 
   @Override
-  public List<CurrencyDTO> getAllCurrencyDto(){
-    return currencyRepository.findCurrencyDtoListBy();
-  }
-
-  @Override
-  public Float getLatestRateByCurrencyId(int id){
+  public BigDecimal getLatestRateByCurrencyId(int id){
     return rateRepository.findLatestByCurrencyId(id);
   }
 
@@ -59,34 +68,34 @@ public class DataAccessObjectImpl implements DataAccessObject {
   public Page<Rate> getPagedRateByCharCode(String charCode, Pageable pageable){
     return rateRepository.findAllByCurrency_CharCode(charCode, pageable);
   }
-  
-  @Override
-  public CurrencyDTO getCurrencyDtoByCharCode(String charCode){
-    return currencyRepository.findCurrencyDtoByCharCode(charCode);
-  }
-
-  @Override
-  public CurrencyDTO getCurrencyDtoById(int id){
-    return currencyRepository.findCurrencyDtoById(id);
-  }
 
   @Override
   public List<Rate> getRateInRange(LocalDate startDate, LocalDate endDate, int id) {
     return rateRepository.findInRange(startDate, endDate, id);
   }
 
-  /*
-   * Setter methods for autowiring dependencies 
-  */ 
-
-  @Autowired
-  public void setRateRepository(RateRepository rateRepository) {
-    this.rateRepository = rateRepository;
+  @Override
+  public void deleteCurrencyFirstRate(int currencyId){
+    rateRepository.deleteFirstRateByCurrencyId(currencyId);
   }
 
-  @Autowired
-  public void setCurrencyRepository(CurrencyRepository currencyRepository) {
-    this.currencyRepository = currencyRepository;
+  @Override
+  public BigDecimal getAverageValue(int currencyId, int month){
+    return averageRepository.findValueByForeignKeyIdAndMonthId(currencyId, month);
   }
-  
+
+  @Override
+  public Average getAverage(int currencyId, int month){
+    return averageRepository.findAverageByForeignKeyIdAndMonthId(currencyId, month);
+  }
+
+  @Override
+  public List<Month> getAllMonths(){
+    return monthRepository.findAll();
+  }
+
+  @Override
+  public void save(Average entity){
+    averageRepository.save(entity);
+  }
 }

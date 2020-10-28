@@ -1,8 +1,8 @@
 package com.exchangerates.service;
 
-import com.exchangerates.cache.InternalCache;
-import com.exchangerates.entities.Currency;
+import com.exchangerates.domain.Currency;
 import com.exchangerates.exception.CurrencyNotFoundException;
+import com.exchangerates.initializer.CurrencyMap;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,21 +22,20 @@ public class CurrencyServiceTest {
 
   @Autowired
   private CurrencyService currencyService;
-
   @MockBean
-  private InternalCache cache;
+  private CurrencyMap map;
 
   private Currency dollarTestCurrency = new Currency(896,"USD",1,"US Dollar");
   private Currency euroTestCurrency = new Currency(933,"EUR",1,"Euro");
 
   @Test
   void getCurrencyTest(){
-    Mockito.when(cache.getCurrency(Mockito.eq("usd")))
+    Mockito.when(map.getCurrency(Mockito.eq("usd")))
             .thenReturn(dollarTestCurrency);
 
     EntityModel<Currency> currencyEntityModel = currencyService.getCurrency("usd");
 
-    Mockito.verify(cache, Mockito.times(1)).getCurrency(Mockito.anyString());
+    Mockito.verify(map, Mockito.times(1)).getCurrency(Mockito.anyString());
 
     Assert.assertNotNull(currencyEntityModel);
     Assert.assertEquals(currencyEntityModel.getContent().getCharCode(), "USD");
@@ -48,7 +47,7 @@ public class CurrencyServiceTest {
 
   @Test
   void getCurrencyThrowsCurrencyNotFoundExceptionTest(){
-    Mockito.when(cache.getCurrency(Mockito.anyString()))
+    Mockito.when(map.getCurrency(Mockito.anyString()))
             .thenReturn(null);
 
     Assert.assertThrows(CurrencyNotFoundException.class, () -> currencyService.getCurrency(Mockito.anyString()));
@@ -56,7 +55,7 @@ public class CurrencyServiceTest {
 
   @Test
   void getAllCurrencies(){
-    Mockito.when(cache.getAllCurrencies())
+    Mockito.when(map.getAllCurrencies())
             .thenReturn(new ArrayList<>(List.of(
                     dollarTestCurrency,
                     euroTestCurrency
@@ -64,7 +63,7 @@ public class CurrencyServiceTest {
 
     CollectionModel<EntityModel<Currency>> collectionModel = currencyService.getAllCurrencies();
 
-    Mockito.verify(cache, Mockito.times(1)).getAllCurrencies();
+    Mockito.verify(map, Mockito.times(1)).getAllCurrencies();
 
     Assert.assertNotNull(collectionModel);
     Assert.assertTrue(collectionModel.hasLinks());

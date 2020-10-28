@@ -1,6 +1,6 @@
 package com.exchangerates.initializer;
 
-import com.exchangerates.parse.ParseExchangeRates;
+import com.exchangerates.parse.ExchangeRatesParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
@@ -10,11 +10,11 @@ import java.time.LocalDate;
 
 @Component
 class CreationExecutor {
-  private static ParseExchangeRates parser;
+  private static ExchangeRatesParser parser;
 
   @Autowired
-  CreationExecutor(ParseExchangeRates parser){
-    this.parser = parser;
+  CreationExecutor(ExchangeRatesParser parser){
+    CreationExecutor.parser = parser;
   }
 
   static void execute(Creator creator, LocalDate date){

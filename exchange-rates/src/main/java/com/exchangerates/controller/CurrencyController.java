@@ -1,6 +1,6 @@
 package com.exchangerates.controller;
 
-import com.exchangerates.entities.Currency;
+import com.exchangerates.domain.Currency;
 import com.exchangerates.service.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;

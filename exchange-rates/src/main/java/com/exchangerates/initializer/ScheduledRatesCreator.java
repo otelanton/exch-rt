@@ -1,8 +1,8 @@
 package com.exchangerates.initializer;
 
 import com.exchangerates.dao.DataAccessObject;
-import com.exchangerates.entities.Currency;
-import com.exchangerates.parse.ParseExchangeRates;
+import com.exchangerates.domain.Currency;
+import com.exchangerates.parse.ExchangeRatesParser;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
@@ -13,13 +13,15 @@ import java.time.LocalDate;
 @Qualifier("scheduled")
 class ScheduledRatesCreator implements Creator {
   private DataAccessObject dataAccessObject;
-  private ParseExchangeRates parser;
+  private ExchangeRatesParser parser;
   private InitialRatesCreator initialRatesCreator;
+  private CurrencyMap currencyMap;
 
-  public ScheduledRatesCreator(DataAccessObject dataAccessObject, InitialRatesCreator initialRatesCreator, ParseExchangeRates parser) {
+  public ScheduledRatesCreator(DataAccessObject dataAccessObject, InitialRatesCreator initialRatesCreator, ExchangeRatesParser parser, CurrencyMap currencyMap) {
     this.dataAccessObject = dataAccessObject;
     this.initialRatesCreator = initialRatesCreator;
     this.parser = parser;
+    this.currencyMap = currencyMap;
   }
 
   @Override
@@ -29,12 +31,13 @@ class ScheduledRatesCreator implements Creator {
   }
 
   private void removeOldestRate(Element xmlElement){
-    getCurrency(xmlElement).removeRate(0);
+    int currencyId = getCurrency(xmlElement).getId();
+    dataAccessObject.deleteCurrencyFirstRate(currencyId);
   }
 
   private Currency getCurrency(Element xmlElement){
     String charCode = getCharCode(xmlElement);
-    return dataAccessObject.getCurrencyByCharCode(charCode);
+    return currencyMap.getCurrency(charCode);
   }
 
   private String getCharCode(Element xmlElement){

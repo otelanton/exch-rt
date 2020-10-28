@@ -9,11 +9,9 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
-import com.exchangerates.entities.Rate;
+import com.exchangerates.domain.Rate;
 
 import java.util.List;
 
@@ -37,7 +35,7 @@ class RatesPagedModelAssembler {
   public CollectionModel<Rate> toCollectionModel(List<Rate> rates, String startDate, String endDate, String charCode){
 
     CollectionModel<Rate> cm = CollectionModel.of(rates,
-            WebMvcLinkBuilder.linkTo(methodOn(RateController.class).getPagedRates(charCode, null, null)).withRel("page"),
+            linkTo(methodOn(RateController.class).getPagedRates(charCode, null, null)).withRel("page"),
             linkTo(methodOn(CurrencyController.class).getAllCurrencies()).withRel("currencies"),
             linkTo(methodOn(CurrencyController.class).getCurrency(charCode)).withRel("currency"),
             linkTo(methodOn(RateController.class).getRateInRange(charCode, null, null)).withSelfRel(),
@@ -51,24 +49,12 @@ class RatesPagedModelAssembler {
 
     PagedModel<EntityModel<Rate>> model = assembler.toModel(page);
 
-    addCommonLinks(model, charCode);
     model.add(linkTo(methodOn(RateController.class).getPagedRates(charCode, pageable.getPageNumber(), pageable.getPageSize())).withRel("page"));
-
-    return model;
-  }
-
-  /*
-   * Methods for adding required links to the supplied PagedModel.
-   */
-  private void addCommonLinks(PagedModel<EntityModel<Rate>> model, String charCode){
-    if(model == null){
-      throw new IllegalArgumentException("model must not be null.");
-    }
-
-    // common links for all pages
+    model.add(linkTo(methodOn(RateController.class).getAverage(charCode, null)).withRel("average"));
     model.add(
       linkTo(methodOn(CurrencyController.class).getAllCurrencies()).withRel("currencies"),
       linkTo(methodOn(CurrencyController.class).getCurrency(charCode)).withRel("currency")
     );
+    return model;
   }
 }

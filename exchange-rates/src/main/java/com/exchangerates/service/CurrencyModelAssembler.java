@@ -2,7 +2,7 @@ package com.exchangerates.service;
 
 import com.exchangerates.controller.CurrencyController;
 import com.exchangerates.controller.RateController;
-import com.exchangerates.entities.Currency;
+import com.exchangerates.domain.Currency;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -40,6 +40,7 @@ class CurrencyModelAssembler {
         linkTo(methodOn(RateController.class).getPagedRates(charCode, null, null)).withRel("page"),
         linkTo(methodOn(RateController.class).getRateInRange(charCode, null, null)).withRel("range"),
         linkTo(methodOn(CurrencyController.class).getAllCurrencies()).withRel("currencies"),
+        linkTo(methodOn(RateController.class).getAverage(charCode, null)).withRel("average"),
         linkTo(methodOn(CurrencyController.class).getCurrency(charCode)).withSelfRel()
     );
   }

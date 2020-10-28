@@ -1,6 +1,6 @@
 package com.exchangerates.controller;
 
-import com.exchangerates.entities.Rate;
+import com.exchangerates.domain.Rate;
 import com.exchangerates.service.RateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Validated
 @RestController
@@ -42,10 +43,9 @@ public class RateController {
   }
 
   @RequestMapping(value = "/average/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<Double> getAverage(@PathVariable String charCode, @NotNull @RequestParam Integer month){
-    double averageRateValue = rateService.getRateAverageForMonth(charCode, month);
+  public ResponseEntity<String> getAverage(@PathVariable String charCode, @NotNull @RequestParam Integer month){
+    BigDecimal averageRateValue = rateService.getRateAverageForMonth(charCode, month);
 
-    return new ResponseEntity<>(averageRateValue, HttpStatus.OK);
+    return new ResponseEntity<>(averageRateValue.toString(), HttpStatus.OK);
   }
-
 }

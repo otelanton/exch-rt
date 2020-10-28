@@ -1,8 +1,8 @@
 package com.exchangerates.service;
 
-import com.exchangerates.cache.InternalCache;
-import com.exchangerates.entities.Currency;
+import com.exchangerates.domain.Currency;
 import com.exchangerates.exception.CurrencyNotFoundException;
+import com.exchangerates.initializer.CurrencyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -14,23 +14,22 @@ import java.util.Optional;
 @Service
 public class CurrencyService{
 
-  private InternalCache cache;
   private CurrencyModelAssembler currencyModelAssembler;
+  private CurrencyMap currencyMap;
 
   @Autowired
-  CurrencyService(InternalCache cache, CurrencyModelAssembler currencyModelAssembler){
-    this.cache = cache;
+  CurrencyService(CurrencyModelAssembler currencyModelAssembler, CurrencyMap currencyMap){
     this.currencyModelAssembler = currencyModelAssembler;
+    this.currencyMap = currencyMap;
   }
 
   public EntityModel<Currency> getCurrency(String charCode){
-    Currency currency = Optional.ofNullable(cache.getCurrency(charCode)).orElseThrow(() -> new CurrencyNotFoundException("Currency not found!", charCode));
-
+    Currency currency = Optional.ofNullable(currencyMap.getCurrency(charCode.toUpperCase())).orElseThrow(() -> new CurrencyNotFoundException("Currency not found!", charCode));
     return currencyModelAssembler.toModel(currency, charCode);
   }
 
   public CollectionModel<EntityModel<Currency>> getAllCurrencies(){
-    List<Currency> currencyList = cache.getAllCurrencies();
+    List<Currency> currencyList = currencyMap.getAllCurrencies();
 
     return currencyModelAssembler.toCollectionModel(currencyList);
   }

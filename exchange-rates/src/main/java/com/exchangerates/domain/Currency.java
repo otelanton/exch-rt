@@ -1,4 +1,4 @@
-package com.exchangerates.entities;
+package com.exchangerates.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -17,7 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
 @Entity
-public class Currency {
+public class Currency implements IEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +35,12 @@ public class Currency {
     cascade = CascadeType.ALL, 
     fetch = FetchType.LAZY)
   private List<Rate> rates = new ArrayList<>();
+  @JsonIgnore
+  @OneToMany(mappedBy = "foreignKey",
+    orphanRemoval = true,
+    cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY)
+  private List<Average> averages = new ArrayList<>();
 
   public Currency() {}
 
@@ -108,6 +113,24 @@ public class Currency {
     Rate r = rates.get(0);
     r.setCurrency(null);
     rates.remove(r);
+  }
+
+  public List<Average> getAverages(){
+    return averages;
+  }
+
+  public void setAverages(List<Average> averages){
+    this.averages = averages;
+  }
+
+  public void addAverage(Average average){
+    averages.add(average);
+    average.setForeignKey(this);
+  }
+
+  public void removeAverage(Average average){
+    average.setForeignKey(null);
+    averages.remove(average);
   }
 
   @Override

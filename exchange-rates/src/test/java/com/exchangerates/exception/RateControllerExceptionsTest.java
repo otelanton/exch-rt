@@ -1,6 +1,5 @@
 package com.exchangerates.exception;
 
-import com.exchangerates.cache.InternalCache;
 import com.exchangerates.controller.RateController;
 import com.exchangerates.dao.DataAccessObjectImpl;
 import org.junit.jupiter.api.Test;
@@ -27,8 +26,6 @@ public class RateControllerExceptionsTest {
 
   @Autowired
   private MockMvc mockMvc;
-  @MockBean
-  private InternalCache cache;
   @MockBean
   private DataAccessObjectImpl dao;
 

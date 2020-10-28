@@ -1,6 +1,5 @@
 package com.exchangerates.exception;
 
-import com.exchangerates.cache.InternalCache;
 import com.exchangerates.dao.DataAccessObjectImpl;
 import com.exchangerates.service.RateService;
 import org.junit.Assert;
@@ -11,20 +10,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeParseException;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class RateServiceExceptionsTest {
   @Autowired
   private RateService service;
 
   @MockBean
   private DataAccessObjectImpl dao;
-  @MockBean
-  private InternalCache cache;
 
   @Test
   void averageThrowsDateOutOfRangeExceptionTest(){
@@ -63,7 +62,7 @@ public class RateServiceExceptionsTest {
 
   @Test
   void getPagedRatesThrowsRateNotFoundException(){
-    Mockito.when(cache.getPagedRates(Mockito.anyString(), Mockito.any(PageRequest.class)))
+    Mockito.when(dao.getPagedRateByCharCode(Mockito.anyString(), Mockito.any(PageRequest.class)))
       .thenReturn(Page.empty()
     );
 
