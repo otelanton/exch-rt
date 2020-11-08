@@ -7,10 +7,9 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping(path = "/currencies")
@@ -18,8 +17,13 @@ public class CurrencyController {
 
   private CurrencyService service;
 
-  @RequestMapping(value = "/single/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<EntityModel<Currency>> getCurrency(@PathVariable String charCode){
+  @Autowired
+  CurrencyController(CurrencyService service){
+    this.service = service;
+  }
+
+  @RequestMapping(value = "/single", method = RequestMethod.GET)
+  public ResponseEntity<EntityModel<Currency>> getCurrency(@NotBlank @RequestParam String charCode){
     EntityModel<Currency> currency = service.getCurrency(charCode);
 
     return new ResponseEntity<>(currency, HttpStatus.OK);
@@ -30,14 +34,5 @@ public class CurrencyController {
     CollectionModel<EntityModel<Currency>> allCurrencies = service.getAllCurrencies();
 
     return new ResponseEntity<>(allCurrencies, HttpStatus.OK);
-  }
-
-  /*
-   * Setter methods for autowiring dependencies 
-  */ 
-
-  @Autowired
-  public void setService(CurrencyService service){
-    this.service = service;
   }
 }

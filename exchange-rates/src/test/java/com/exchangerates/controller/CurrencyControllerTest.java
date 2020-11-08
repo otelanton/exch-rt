@@ -29,7 +29,8 @@ public class CurrencyControllerTest {
 
   @Test
   void getCurrencyTest() throws Exception {
-    mockMvc.perform(get("/currencies/single/{charCode}", "USD"))
+    mockMvc.perform(get("/currencies/single")
+        .param("charCode", "USD"))
       .andExpect(status().isOk()
     );
 

@@ -25,7 +25,8 @@ class RateControllerTest {
 
   @Test
   void getPagedRatesTest() throws Exception {
-    mockMvc.perform(get("/rate/page/{charCode}", "USD")
+    mockMvc.perform(get("/rate/page")
+        .param("charCode", "USD")
         .param("size", "5")
         .param("page", "0"))
       .andExpect(status().isOk()
@@ -36,7 +37,8 @@ class RateControllerTest {
 
   @Test
   void getRateInRangeTest() throws Exception {
-    mockMvc.perform(get("/rate/range/{charCode}", "USD")
+    mockMvc.perform(get("/rate/range")
+        .param("charCode", "USD")
         .param("startDate", "2020-09-09")
         .param("endDate", "2020-09-13"))
       .andExpect(status().isOk()
@@ -50,8 +52,9 @@ class RateControllerTest {
     Mockito.when(service.getRateAverageForMonth(Mockito.anyString(), Mockito.anyInt()))
       .thenReturn(BigDecimal.ZERO);
 
-    mockMvc.perform(get("/rate/average/{charCode}", "USD")
-        .param("month", "1"))
+    mockMvc.perform(get("/rate/average")
+      .param("charCode", "USD")
+      .param("month", "1"))
       .andExpect(status().isOk()
     );
 

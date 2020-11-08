@@ -26,24 +26,24 @@ public class RateController {
     this.rateService = rateService;
   }
 
-  @RequestMapping(value = "/page/{charCode}", method = RequestMethod.GET)
+  @RequestMapping(value = "/page", method = RequestMethod.GET)
   public ResponseEntity<PagedModel<EntityModel<Rate>>> getPagedRates(
-      @PathVariable String charCode, @NotNull @RequestParam Integer page, @NotNull @RequestParam Integer size) {
+      @NotBlank @RequestParam String charCode, @NotNull @RequestParam Integer page, @NotNull @RequestParam Integer size) {
     PagedModel<EntityModel<Rate>> entityModelPagedModel = rateService.getPagedRates(charCode, page, size);
 
     return new ResponseEntity<>(entityModelPagedModel, HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/range/{charCode}", method = RequestMethod.GET)
+  @RequestMapping(value = "/range", method = RequestMethod.GET)
   public ResponseEntity<CollectionModel<Rate>> getRateInRange(
-      @PathVariable String charCode, @NotBlank @RequestParam String startDate, @NotBlank @RequestParam String endDate) {
+      @NotBlank @RequestParam String charCode, @NotBlank @RequestParam String startDate, @NotBlank @RequestParam String endDate) {
     CollectionModel<Rate> rateInRange = rateService.getRatesInRage(startDate, endDate, charCode);
 
     return new ResponseEntity<>(rateInRange, HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/average/{charCode}", method = RequestMethod.GET)
-  public ResponseEntity<String> getAverage(@PathVariable String charCode, @NotNull @RequestParam Integer month){
+  @RequestMapping(value = "/average", method = RequestMethod.GET)
+  public ResponseEntity<String> getAverage(@NotBlank @RequestParam String charCode, @NotNull @RequestParam Integer month){
     BigDecimal averageRateValue = rateService.getRateAverageForMonth(charCode, month);
 
     return new ResponseEntity<>(averageRateValue.toString(), HttpStatus.OK);
