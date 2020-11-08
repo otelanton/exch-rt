@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.exchangerates.dao.DataAccessObject;
+import com.exchangerates.domain.dao.DataAccessObject;
 import com.exchangerates.domain.Rate;
-import com.exchangerates.exception.DateOutOfRangeException;
-import com.exchangerates.exception.RateNotFoundException;
+import com.exchangerates.domain.exception.DateOutOfRangeException;
+import com.exchangerates.domain.exception.RateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

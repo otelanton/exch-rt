@@ -1,6 +1,6 @@
 package com.exchangerates.service;
 
-import com.exchangerates.dao.DataAccessObjectImpl;
+import com.exchangerates.domain.dao.DataAccessObjectImpl;
 import com.exchangerates.domain.Currency;
 import com.exchangerates.domain.Rate;
 import org.junit.Assert;

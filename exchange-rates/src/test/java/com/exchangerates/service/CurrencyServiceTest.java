@@ -1,8 +1,8 @@
 package com.exchangerates.service;
 
 import com.exchangerates.domain.Currency;
-import com.exchangerates.exception.CurrencyNotFoundException;
-import com.exchangerates.initializer.CurrencyMap;
+import com.exchangerates.domain.exception.CurrencyNotFoundException;
+import com.exchangerates.domain.initializer.CurrencyMap;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

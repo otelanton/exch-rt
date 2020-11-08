@@ -1,8 +1,8 @@
 package com.exchangerates.controller;
 
-import com.exchangerates.dao.DataAccessObjectImpl;
-import com.exchangerates.repositories.CurrencyRepository;
-import com.exchangerates.repositories.RateRepository;
+import com.exchangerates.domain.dao.DataAccessObjectImpl;
+import com.exchangerates.domain.repositories.CurrencyRepository;
+import com.exchangerates.domain.repositories.RateRepository;
 import com.exchangerates.service.CurrencyService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
