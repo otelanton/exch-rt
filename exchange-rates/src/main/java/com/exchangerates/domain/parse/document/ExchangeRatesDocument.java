@@ -5,5 +5,4 @@ import java.time.LocalDate;
 
 public interface ExchangeRatesDocument {
   Document createDocument(LocalDate date);
-  Document createDocument();
 }
