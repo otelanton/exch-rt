@@ -1,35 +1,35 @@
 package com.exchangerates.domain.initializer.creators.currency;
 
-import com.exchangerates.domain.dao.DataAccessObject;
 import com.exchangerates.domain.Currency;
+import com.exchangerates.domain.dao.DataAccessObject;
+import com.exchangerates.domain.initializer.CreationExecutor;
 import com.exchangerates.domain.initializer.creators.Creator;
-import com.exchangerates.domain.initializer.factory.EntitiesFactory;
+import com.exchangerates.domain.initializer.factory.CurrencyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Element;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Component
 @Qualifier("currency")
-class CurrencyCreator implements Creator {
+public class CurrencyCreator implements Creator {
 
   private DataAccessObject dataAccessObject;
-  private EntitiesFactory currencyFactory;
+  private CurrencyFactory currencyFactory;
 
   @Autowired
-  public CurrencyCreator(DataAccessObject dataAccessObject, @Qualifier("currency_f") EntitiesFactory currencyFactory) {
+  public CurrencyCreator(DataAccessObject dataAccessObject, CurrencyFactory currencyFactory) {
     this.dataAccessObject = dataAccessObject;
     this.currencyFactory = currencyFactory;
   }
 
-  public void create(LocalDate date, Element xmlElement){
-    Currency newCurrency = getNewCurrency(xmlElement);
-    dataAccessObject.save(newCurrency);
+  public List<Currency> create(LocalDate date){
+    List<Currency> currencies = CreationExecutor.execute(date, currencyFactory, Currency.class);
+    dataAccessObject.addAllCurrencies(currencies);
+
+    return currencies;
   }
 
-  private Currency getNewCurrency(Element xmlElement) {
-    return (Currency) currencyFactory.getInstance(LocalDate.now(), xmlElement);
-  }
 }

@@ -48,6 +48,14 @@ public class DataAccessObjectImpl implements DataAccessObject {
   public void save(Currency entity) {
     currencyRepository.save(entity);
   }
+  @Override
+  public void addAllCurrencies(List<Currency> currencyList){
+    currencyRepository.saveAll(currencyList);
+  }
+  @Override
+  public void addAllRates(List<Rate> rateList){
+    rateRepository.saveAll(rateList);
+  }
 
   @Override
   public Currency getCurrencyByCharCode(String charCode) {

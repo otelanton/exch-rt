@@ -30,7 +30,7 @@ public class BootstrapperDev {
   }
 
   private void currencyBootstrap(){
-    CreationExecutor.execute(currencyCreator, LocalDate.now());
+    currencyCreator.create(LocalDate.now());
   }
 
   private void rateBootstrap(){
@@ -38,7 +38,7 @@ public class BootstrapperDev {
     LocalDate startDate = endDate.minusDays(8);
 
     while(!startDate.isAfter(endDate)){
-      CreationExecutor.execute(ratesCreator, startDate);
+      ratesCreator.create(startDate);
       startDate = startDate.plusDays(1);
     }
   }

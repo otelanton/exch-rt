@@ -1,8 +1,8 @@
 package com.exchangerates.domain.initializer.factory;
 
-import com.exchangerates.domain.dao.DataAccessObject;
 import com.exchangerates.domain.Currency;
 import com.exchangerates.domain.Rate;
+import com.exchangerates.domain.dao.DataAccessObject;
 import com.exchangerates.domain.initializer.CurrencyMap;
 import com.exchangerates.domain.parse.ExchangeRatesParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 @Qualifier("rate_f")
 @Component
-class RateFactory implements EntitiesFactory {
+public class RateFactory implements EntitiesFactory{
 
   private ExchangeRatesParser parser;
   private DataAccessObject dao;
@@ -23,7 +23,7 @@ class RateFactory implements EntitiesFactory {
   private CurrencyMap currencyMap;
 
   @Autowired
-  RateFactory(ExchangeRatesParser parser, DataAccessObject dao, AverageFactory averageFactory, CurrencyMap currencyMap){
+  public RateFactory(ExchangeRatesParser parser, DataAccessObject dao, AverageFactory averageFactory, CurrencyMap currencyMap){
     this.parser = parser;
     this.dao = dao;
     this.averageFactory = averageFactory;

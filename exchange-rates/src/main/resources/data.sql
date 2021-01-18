@@ -1,4 +1,4 @@
-insert into `month` (code, name) values
+insert into month (code, name) values
 ('Jan', 'January'),
 ('Feb', 'February'),
 ('Mar', 'March'),

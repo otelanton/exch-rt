@@ -1,9 +1,10 @@
 package com.exchangerates.domain.initializer.creators;
 
-import org.w3c.dom.Element;
+import com.exchangerates.domain.IEntity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface Creator {
-  void create(LocalDate date, Element xmlNodeElement);
+  <T extends IEntity> List<T> create(LocalDate date);
 }

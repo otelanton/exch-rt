@@ -1,7 +1,6 @@
 package com.exchangerates.domain.initializer.factory;
 
 import com.exchangerates.domain.Currency;
-import com.exchangerates.domain.IEntity;
 import com.exchangerates.domain.initializer.CurrencyMap;
 import com.exchangerates.domain.parse.ExchangeRatesParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +12,18 @@ import java.time.LocalDate;
 
 @Qualifier("currency_f")
 @Component
-class CurrencyFactory implements EntitiesFactory {
+public class CurrencyFactory implements EntitiesFactory{
   private ExchangeRatesParser parser;
   private CurrencyMap currencyMap;
 
   @Autowired
-  CurrencyFactory(ExchangeRatesParser parser, CurrencyMap currencyMap){
+  public CurrencyFactory(ExchangeRatesParser parser, CurrencyMap currencyMap){
     this.parser = parser;
     this.currencyMap = currencyMap;
   }
 
   @Override
-  public IEntity getInstance(LocalDate date, Element xmlElement){
+  public Currency getInstance(LocalDate date, Element xmlElement){
     int nominal = parseNominal(xmlElement);
     int numCode = parseNumCode(xmlElement);
     String charCode = parseCharCode(xmlElement);

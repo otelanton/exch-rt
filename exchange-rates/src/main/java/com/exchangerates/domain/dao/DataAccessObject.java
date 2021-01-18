@@ -19,6 +19,10 @@ public interface DataAccessObject {
 
   void save(Currency entity);
 
+  void addAllCurrencies(List<Currency> currencyList);
+
+  void addAllRates(List<Rate> rateList);
+
   Currency getCurrencyByCharCode(String charCode);
 
   List<Currency> getAllCurrencies();
