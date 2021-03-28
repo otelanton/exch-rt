@@ -7,6 +7,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -29,10 +30,12 @@ public class BootstrapperDev {
     rateBootstrap();
   }
 
+  @Transactional
   private void currencyBootstrap(){
     currencyCreator.create(LocalDate.now());
   }
 
+  @Transactional
   private void rateBootstrap(){
     LocalDate endDate = LocalDate.now();
     LocalDate startDate = endDate.minusDays(8);

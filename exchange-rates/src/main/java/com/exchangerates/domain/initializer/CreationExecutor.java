@@ -1,5 +1,9 @@
 package com.exchangerates.domain.initializer;
 
+/*
+* Iterates over NodeList
+*/
+
 import com.exchangerates.domain.IEntity;
 import com.exchangerates.domain.initializer.factory.EntitiesFactory;
 import com.exchangerates.domain.parse.ExchangeRatesParser;

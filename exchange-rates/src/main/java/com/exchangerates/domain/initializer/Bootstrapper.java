@@ -1,5 +1,9 @@
 package com.exchangerates.domain.initializer;
 
+/*
+* Creates initial values when application bootstrap is over and it's ready to service requests
+*/
+
 import com.exchangerates.domain.initializer.creators.Creator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

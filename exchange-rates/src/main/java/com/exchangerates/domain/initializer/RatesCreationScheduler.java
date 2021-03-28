@@ -1,5 +1,9 @@
 package com.exchangerates.domain.initializer;
 
+/*
+* Runs a scheduled rates creation job. Scheduling uses a cron-like expression.
+*/
+
 import com.exchangerates.domain.initializer.creators.Creator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
