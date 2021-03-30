@@ -1,9 +1,8 @@
 package com.notificationservice;
 
-import com.notificationservice.domain.event.UserUpdatedEvent;
 import com.notificationservice.domain.Alert;
+import com.notificationservice.domain.event.UserUpdatedEvent;
 import com.notificationservice.repository.AlertRepository;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -14,17 +13,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class Service {
+public class AlertEventsListener {
 
   @Autowired
   private AlertRepository alertRepository;
 
   @KafkaListener(topics = "alert.created", containerFactory = "kafkaListenerContainerFactory")
-  public void create(Alert consumerRecord) {
-    System.out.println(consumerRecord);
-    Alert alert = (Alert) consumerRecord;
-    System.out.println(alert);
-//    alertRepository.save(alert);
+  public void create(Alert createdAlert) {
+    alertRepository.save(createdAlert);
   }
 
   @Transactional
@@ -45,18 +41,17 @@ public class Service {
     }
   }
 
+  @Transactional
   @KafkaListener(topics = "user.deleted", containerFactory = "deleteEventContainerFactory")
   public void deleteAllAlerts(long deletedUserID) {
-    System.out.println(deletedUserID);
     alertRepository.deleteAllByUserID(deletedUserID);
   }
 
+  @Transactional
   @KafkaListener(topics = "alert.deleted", containerFactory = "deleteEventContainerFactory")
-  public void deleteAlert(ConsumerRecord<Long, String> alertID) {
-    String s = alertID.value();
-    String[] ss = s.split(":");
-    long l = Long.parseLong(ss[1].replace("}", ""));
-    System.out.println(l);
-    alertRepository.deleteBySubscription(l);
+  public void deleteAlert(String alertID) {
+    String stringID = alertID.split(":")[1].replace("}", "");
+    long id = Long.parseLong(stringID);
+    alertRepository.deleteByAlertID(id);
   }
 }

@@ -10,5 +10,5 @@ import java.util.List;
 public interface AlertRepository extends JpaRepository<Alert, Long> {
   List<Alert> findAllByUserID(long userID);
   void deleteAllByUserID(long userID);
-  void deleteBySubscription(long id);
+  void deleteByAlertID(long id);
 }

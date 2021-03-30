@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.json.JsonMergePatch;
 import javax.json.JsonObject;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -39,7 +38,6 @@ public class AccountService {
   private UserValidator userValidator;
   private AlertRepository alertRepository;
   private KafkaTemplate<Long, Event> kafkaTemplate;
-  private KafkaTemplate<Long, JsonObject> kafkaTemplateJson;
   private ObjectMapper objectMapper;
 
   @Transactional
@@ -52,12 +50,9 @@ public class AccountService {
         dto.getType()
     );
     alertRepository.save(alert);
-    List<Alert> alert1 = alertRepository.getByUserId(user.getId());
-    alert = alert1.get(alert1.size()-1);
+    alert = alertRepository.getFirstByUserIdOrderByIdDesc(user.getId());
     user.addAlert(alert);
-    System.out.println(alert.getId());
     AlertCreatedEvent n = new AlertCreatedEvent(alert, user);
-    System.out.println(n);
     kafkaTemplate.send(new ProducerRecord<>("alert.created",1L, new AlertCreatedEvent(alert, user)));
   }
 
@@ -110,7 +105,6 @@ public class AccountService {
   }
 
   public void deleteAlert(String headerValue, long id) {
-    System.out.println(id);
     alertRepository.deleteById(id);
     kafkaTemplate.send(new ProducerRecord<>("alert.deleted", new DeleteEvent(id)));
 
@@ -139,7 +133,6 @@ public class AccountService {
     String selfJson = "";
     try {
       selfJson = objectMapper.writerWithView(Views.UserGet.class).writeValueAsString(self);
-      System.out.println(selfJson);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }

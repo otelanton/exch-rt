@@ -10,5 +10,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
   @EntityGraph(attributePaths = {"alerts", "confirmationToken"})
   User findByUsername(String userName);
   User findByEmail(String email);
+
 //  void deleteById(long id);
 }
