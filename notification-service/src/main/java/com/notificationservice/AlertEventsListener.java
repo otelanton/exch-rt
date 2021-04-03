@@ -1,10 +1,12 @@
 package com.notificationservice;
 
 import com.notificationservice.domain.Alert;
+import com.notificationservice.domain.event.NewRateCreatedEvent;
 import com.notificationservice.domain.event.UserUpdatedEvent;
 import com.notificationservice.repository.AlertRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +17,14 @@ import java.util.stream.Collectors;
 @Component
 public class AlertEventsListener {
 
-  @Autowired
   private AlertRepository alertRepository;
+  private JavaMailSender javaMailSender;
+  private SimpleMailMessage emailMessage;
 
+  public AlertEventsListener(AlertRepository alertRepository, JavaMailSender javaMailSender) {
+    this.alertRepository = alertRepository;
+    this.javaMailSender = javaMailSender;
+  }
   @KafkaListener(topics = "alert.created", containerFactory = "kafkaListenerContainerFactory")
   public void create(Alert createdAlert) {
     alertRepository.save(createdAlert);
@@ -53,5 +60,36 @@ public class AlertEventsListener {
     String stringID = alertID.split(":")[1].replace("}", "");
     long id = Long.parseLong(stringID);
     alertRepository.deleteByAlertID(id);
+  }
+
+  @KafkaListener(topics = "rates", containerFactory = "rateEventContainerFactory")
+  public void rates(List<NewRateCreatedEvent> newRateCreatedEvents) {
+    List<Alert> alerts = alertRepository.findAll();
+    if(!alerts.isEmpty()) {
+      newRateCreatedEvents.forEach(event -> {
+        alerts.stream()
+            .filter(alert -> alert.getCurrency().equals(event.getCurrency()))
+            .forEach(alert -> {
+              if (event.getRate().compareTo(alert.getHigh()) > 0) {
+                emailMessage = new SimpleMailMessage();
+                emailMessage.setTo(alert.getEmail());
+                emailMessage.setSubject("Alert");
+                emailMessage.setText(
+                    String.format("Your subscription currency %s raised higher than %s and now is %s", alert.getCurrency(), alert.getHigh(), event.getRate()));
+                javaMailSender.send(emailMessage);
+                System.out.printf("rate %s is higher than rate %s for currency %s%n", event.getRate(), alert.getHigh(), alert.getCurrency());
+              }
+              if (event.getRate().compareTo(alert.getLow()) < 0) {
+                emailMessage = new SimpleMailMessage();
+                emailMessage.setTo(alert.getEmail());
+                emailMessage.setSubject("Alert");
+                emailMessage.setText(
+                    String.format("Your subscription currency %s fell lower than %s and now is %s", alert.getCurrency(), alert.getLow(), event.getRate()));
+                javaMailSender.send(emailMessage);
+                System.out.printf("rate %s is lower than rate %s for currency %s%n", event.getRate(), alert.getLow(), alert.getCurrency());
+              }
+            });
+      });
+    }
   }
 }

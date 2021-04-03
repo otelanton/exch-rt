@@ -1,5 +1,8 @@
 package com.notificationservice.configuration;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.notificationservice.domain.event.NewRateCreatedEvent;
 import com.notificationservice.domain.event.UserUpdatedEvent;
 import com.notificationservice.domain.Alert;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -14,6 +17,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -71,4 +75,22 @@ public class KafkaConsumerConfig {
     return factory;
   }
 
+  @Bean
+  public ConsumerFactory<Long, List<NewRateCreatedEvent>> rateEventConsumerFactory() {
+    return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new LongDeserializer(),
+        kafkaDeserializer());
+  }
+
+  @Bean
+  public KafkaListenerContainerFactory<?> rateEventContainerFactory() {
+    ConcurrentKafkaListenerContainerFactory<Long, List<NewRateCreatedEvent>> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    factory.setConsumerFactory(rateEventConsumerFactory());
+    return factory;
+  }
+
+  protected JsonDeserializer<List<NewRateCreatedEvent>> kafkaDeserializer() {
+    ObjectMapper om = new ObjectMapper();
+    JavaType type = om.getTypeFactory().constructCollectionType(List.class, NewRateCreatedEvent.class);
+    return new JsonDeserializer<>(type, om, false);
+  }
 }
