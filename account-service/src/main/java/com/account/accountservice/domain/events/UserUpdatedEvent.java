@@ -2,12 +2,14 @@ package com.account.accountservice.domain.events;
 
 import com.account.accountservice.domain.User;
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Getter
+@ToString
 public class UserUpdatedEvent implements Event {
 
   @Id

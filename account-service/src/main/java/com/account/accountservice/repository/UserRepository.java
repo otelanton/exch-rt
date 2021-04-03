@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-  @EntityGraph(attributePaths = {"alerts", "confirmationToken"})
+  @EntityGraph(attributePaths = {"alerts"})
   User findByUsername(String userName);
   User findByEmail(String email);
-
+  User findByAlertsId(long id);
 //  void deleteById(long id);
 }

@@ -7,14 +7,15 @@ import com.account.accountservice.domain.*;
 import com.account.accountservice.domain.events.Event;
 import com.account.accountservice.domain.events.AlertCreatedEvent;
 import com.account.accountservice.domain.events.UserUpdatedEvent;
-import com.account.accountservice.repository.ConfirmationTokenRepository;
 import com.account.accountservice.repository.AlertRepository;
 import com.account.accountservice.repository.UserRepository;
+import com.account.accountservice.util.UserValidator;
 import com.account.accountservice.util.Views;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,12 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.json.JsonMergePatch;
 import javax.json.JsonObject;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class AccountService {
 
   private UserRepository userRepository;
-  private ConfirmationTokenRepository confirmationTokenRepository;
   private PasswordEncoder passwordEncoder;
   private Patcher patcher;
   private JwtConfig jwtConfig;
@@ -46,14 +47,15 @@ public class AccountService {
     Alert alert = new Alert(
         user,
         dto.getCurrency(),
-        dto.getRate(),
-        dto.getType()
+        dto.getLow(),
+        dto.getHigh()
     );
     alertRepository.save(alert);
     alert = alertRepository.getFirstByUserIdOrderByIdDesc(user.getId());
     user.addAlert(alert);
     AlertCreatedEvent n = new AlertCreatedEvent(alert, user);
     kafkaTemplate.send(new ProducerRecord<>("alert.created",1L, new AlertCreatedEvent(alert, user)));
+    log.info(String.format("Posted %s event: %s%n", AlertCreatedEvent.class.getSimpleName(), alert.toString()));
   }
 
   @Transactional
@@ -62,15 +64,12 @@ public class AccountService {
     String encryptedPassword = passwordEncoder.encode(newUser.getPassword());
     newUser.setPassword(encryptedPassword);
     userRepository.save(newUser);
-    ConfirmationToken confirmationToken = new ConfirmationToken();
-    confirmationTokenRepository.save(confirmationToken);
     return newUser;
   }
 
   @Transactional
   public void updateUser(String header, JsonMergePatch jsonMergePatch) {
     JsonObject jsonObject = jsonMergePatch.toJsonValue().asJsonObject();
-    System.out.println(jsonObject);
     this.validateJsonMergePatch(jsonObject);
     String username = jwtConfig.getUsernameFromToken(header);
     User user = userRepository.findByUsername(username);
@@ -80,7 +79,9 @@ public class AccountService {
     }
 
     User patchedUser = patcher.mergePatch(jsonMergePatch, user);
-    kafkaTemplate.send(new ProducerRecord<>("user.updated", new UserUpdatedEvent(patchedUser)));
+    UserUpdatedEvent userUpdatedEvent = new UserUpdatedEvent(patchedUser);
+    kafkaTemplate.send(new ProducerRecord<>("user.updated", userUpdatedEvent));
+    log.info(String.format("Posted %s event: %s%n", UserUpdatedEvent.class.getSimpleName(), userUpdatedEvent.toString()));
     userRepository.save(patchedUser);
   }
 
@@ -98,27 +99,22 @@ public class AccountService {
 
   @Transactional
   public void deleteUser(String headerValue) {
-
     User loggedInUser = userRepository.findByUsername(jwtConfig.getUsernameFromToken(headerValue));
     userRepository.deleteById(loggedInUser.getId());
-    kafkaTemplate.send(new ProducerRecord<>("user.deleted", new DeleteEvent(loggedInUser.getId())));
-  }
-
-  public void deleteAlert(String headerValue, long id) {
-    alertRepository.deleteById(id);
-    kafkaTemplate.send(new ProducerRecord<>("alert.deleted", new DeleteEvent(id)));
-
+    DeleteEvent deleteEvent = new DeleteEvent(loggedInUser.getId());
+    kafkaTemplate.send(new ProducerRecord<>("user.deleted", deleteEvent));
+    log.info(String.format("Posted %s event: %s%n", DeleteEvent.class.getSimpleName(), deleteEvent.toString()));
   }
 
   @Transactional
-  public void confirmUser(String token){
-    ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token);
-    if(confirmationToken != null){
-      User user = userRepository.findById(1L).get();
-      user.setEnabled(true);
-      userRepository.save(user);
-      confirmationTokenRepository.delete(confirmationToken);
-    }
+  public void deleteAlert(String headerValue, long id) {
+    Alert alert = alertRepository.getOne(id);
+    User u = userRepository.findByAlertsId(id);
+    u.removeAlert(alert);
+    alertRepository.delete(alert);
+    DeleteEvent deleteEvent = new DeleteEvent(id);
+    kafkaTemplate.send(new ProducerRecord<>("alert.deleted", deleteEvent));
+    log.info(String.format("Posted %s event: %s%n", DeleteEvent.class.getSimpleName(), deleteEvent.toString()));
   }
 
   public UserDetails getUser(String username) {

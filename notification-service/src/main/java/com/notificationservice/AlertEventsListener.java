@@ -4,6 +4,7 @@ import com.notificationservice.domain.Alert;
 import com.notificationservice.domain.event.NewRateCreatedEvent;
 import com.notificationservice.domain.event.UserUpdatedEvent;
 import com.notificationservice.repository.AlertRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class AlertEventsListener {
 
@@ -28,6 +30,7 @@ public class AlertEventsListener {
   @KafkaListener(topics = "alert.created", containerFactory = "kafkaListenerContainerFactory")
   public void create(Alert createdAlert) {
     alertRepository.save(createdAlert);
+    log.info(String.format("Consumed %s event: %s%n", Alert.class.getSimpleName(), createdAlert.toString()));
   }
 
   @Transactional
@@ -45,6 +48,7 @@ public class AlertEventsListener {
         return a;
       }).collect(Collectors.toCollection(ArrayList::new));
       alertRepository.saveAll(alerts);
+      log.info(String.format("Consumed %s event: %s%n", UserUpdatedEvent.class.getSimpleName(), event.toString()));
     }
   }
 
@@ -77,7 +81,7 @@ public class AlertEventsListener {
                 emailMessage.setText(
                     String.format("Your subscription currency %s raised higher than %s and now is %s", alert.getCurrency(), alert.getHigh(), event.getRate()));
                 javaMailSender.send(emailMessage);
-                System.out.printf("rate %s is higher than rate %s for currency %s%n", event.getRate(), alert.getHigh(), alert.getCurrency());
+                log.info(String.format("Consumed %s event: %s%n", NewRateCreatedEvent.class.getSimpleName(), event.toString()));
               }
               if (event.getRate().compareTo(alert.getLow()) < 0) {
                 emailMessage = new SimpleMailMessage();
@@ -86,7 +90,7 @@ public class AlertEventsListener {
                 emailMessage.setText(
                     String.format("Your subscription currency %s fell lower than %s and now is %s", alert.getCurrency(), alert.getLow(), event.getRate()));
                 javaMailSender.send(emailMessage);
-                System.out.printf("rate %s is lower than rate %s for currency %s%n", event.getRate(), alert.getLow(), alert.getCurrency());
+                log.info(String.format("Consumed %s event: %s%n", NewRateCreatedEvent.class.getSimpleName(), event.toString()));
               }
             });
       });

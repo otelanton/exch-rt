@@ -3,14 +3,16 @@ package com.account.accountservice.domain;
 import com.account.accountservice.util.Views;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 public class Alert {
 
@@ -20,19 +22,21 @@ public class Alert {
   private long id;
   @ManyToOne
   @JsonBackReference
+  @ToString.Exclude
   private User user;
   @JsonView(Views.UserGet.class)
   private String currency;
   @Column(nullable = false, precision = 9, scale = 4)
   @JsonView(Views.UserGet.class)
-  private BigDecimal rateValue;
+  private BigDecimal low;
+  @Column(nullable = false, precision = 9, scale = 4)
   @JsonView(Views.UserGet.class)
-  private SubscriptionType type;
+  private BigDecimal high;
 
-  public Alert(User user, String currency, BigDecimal rate, SubscriptionType type) {
+  public Alert(User user, String currency, BigDecimal low, BigDecimal high) {
     this.user = user;
     this.currency = currency;
-    this.rateValue = rate;
-    this.type = type;
+    this.low = low;
+    this.high = high;
   }
 }

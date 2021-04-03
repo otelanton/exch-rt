@@ -1,5 +1,6 @@
-package com.account.accountservice.domain;
+package com.account.accountservice.util;
 
+import com.account.accountservice.domain.User;
 import com.account.accountservice.exception.UserAlreadyExistsException;
 import com.account.accountservice.exception.UserDataNotValidException;
 import com.account.accountservice.repository.UserRepository;

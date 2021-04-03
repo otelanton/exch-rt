@@ -1,25 +1,29 @@
 package com.account.accountservice.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class AlertDTO {
 
-  @NotNull
-  private BigDecimal rate;
+  private BigDecimal low;
+  private BigDecimal high;
   @NotBlank
   private String currency;
-  @NotNull
-  private SubscriptionType type;
+
+  public AlertDTO(BigDecimal low, BigDecimal high, String currency) {
+    if(low == null) {
+      this.low = new BigDecimal(Integer.MAX_VALUE);
+    }
+    if(high == null) {
+      this.high = new BigDecimal(Integer.MIN_VALUE);
+    }
+    this.currency = currency;
+  }
 }

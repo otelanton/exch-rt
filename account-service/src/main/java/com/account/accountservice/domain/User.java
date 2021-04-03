@@ -37,9 +37,6 @@ public class User implements UserDetails {
   @JsonIgnore
   private Roles userRole = Roles.ROLE_USER;
   private boolean enabled = true;
-  @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-  @JoinColumn(name = "id")
-  private ConfirmationToken confirmationToken;
   @OneToMany(orphanRemoval = true, mappedBy = "user", fetch = FetchType.LAZY)
   @JsonManagedReference
   @JsonView(Views.UserGet.class)

@@ -58,11 +58,5 @@ public class AccountController {
     accountService.deleteAlert(header, id);
     return ResponseEntity.noContent().build();
   }
-
-  @RequestMapping(value = "/confirm", method = RequestMethod.GET)
-  public String confirm(@RequestParam String token){
-    accountService.confirmUser(token);
-    return "/registration";
-  }
 }
 

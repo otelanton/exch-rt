@@ -6,6 +6,7 @@ import com.exchangerates.domain.event.NewRateCreatedEvent;
 import com.exchangerates.domain.initializer.CreationExecutor;
 import com.exchangerates.domain.initializer.creators.Creator;
 import com.exchangerates.domain.initializer.factory.RateFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @Qualifier("initial")
 class InitialRatesCreator implements Creator{
@@ -36,6 +38,7 @@ class InitialRatesCreator implements Creator{
     List<NewRateCreatedEvent> events = rates.stream()
         .map(rate -> new NewRateCreatedEvent(rate.getCurrency().getCharCode(), rate.getValue())).collect(Collectors.toList());
     kafkaTemplate.send("rates", events);
+    log.info(String.format("Posted %s event%n", NewRateCreatedEvent.class.getSimpleName()));
     return rates;
   }
 }
