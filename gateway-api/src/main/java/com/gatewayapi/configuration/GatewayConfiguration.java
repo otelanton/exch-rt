@@ -27,6 +27,10 @@ public class GatewayConfiguration {
             .uri("http://localhost:8081/"))
         .route(r -> r.path("/subscription/**")
             .uri("http://localhost:8082"))
+        .route(r -> r.path("/rate/**")
+            .uri("http://localhost:8083"))
+        .route(r -> r.path("/currencies/**")
+            .uri("http://localhost:8083"))
         .build();
 
   }
